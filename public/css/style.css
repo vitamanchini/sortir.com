@@ -1,0 +1,10 @@
+ul{
+    display: flex;
+    text-decoration: none;
+
+}
+li{
+    background-color: darkgreen;
+    color: white;
+    margin: 20px;
+}
