@@ -1,10 +1,36 @@
+
+main{
+    display: flex;
+    flex-direction: column;
+}
+nav{
+    width: 100vw;
+    display: flex;
+    justify-content: flex-end;
+}
 ul{
     display: flex;
     text-decoration: none;
 
 }
 li{
-    background-color: darkgreen;
-    color: white;
+    display: flex;
     margin: 20px;
+    text-align: center;
+    justify-content: center;
+}
+a{
+    color: white;
+    text-decoration: none;
+    background-color: darkgreen;
+    height: 40px;
+    width: 100px;
+}
+
+footer{
+    width: 100vw;
+    position: absolute;
+    bottom: 0;
+    text-align: center;
+
 }
