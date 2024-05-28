@@ -5,7 +5,7 @@
 /.env.*.local
 /config/secrets/prod/prod.decrypt.private.php
 /public/bundles/
-#/public/assets/
+/public/assets/
 /var/
 /vendor/
 ###< symfony/framework-bundle ###
@@ -19,3 +19,4 @@
 .phpunit.result.cache
 /phpunit.xml
 ###< symfony/phpunit-bridge ###
+/.idea/
