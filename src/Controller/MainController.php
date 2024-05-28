@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\Controller;
 use App\Entity\Participant;
+use App\Repository\ParticipantRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 class MainController extends AbstractController
 {
@@ -15,9 +17,14 @@ class MainController extends AbstractController
 
      #[Route("/", name:"main_home")]
 
-    public function home(): Response
+    public function home(#[CurrentUser] participant $user): Response
     {
-        return $this->render('accueil/home.html.twig');
+
+//        $user= new Participant();
+//        $user = $participantRepository->find()
+        return $this->render('accueil/home.html.twig', [
+            'user' => $user,
+        ]);
     }
     #[Route("/demo", name:"demo")]
     public function demo(EntityManagerInterface $entityManager) : Response

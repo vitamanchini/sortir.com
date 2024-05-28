@@ -1,7 +1,24 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ parent()}}Accueil{% endblock %}
+{% block title %}{{ parent() }}Accueil{% endblock %}
 {% block main %}
 
+    <section id="user-date-field">
+        <p>Date du jour: {{ "now"|date("d-m-Y") }} </p>
+        <p>Participant: {{ user.name }} {{ user.secondName }}</p>
+    </section>
+<section>
+    <h2>Filtrer les sortis</h2>
+    <div>
+        <label for="site">Site: </label>
+        <select>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+        </select>
+        <label for="search"></label>
 
+    </div>
+</section>
 {% endblock %}
