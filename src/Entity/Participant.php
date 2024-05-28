@@ -47,6 +47,12 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $profileImage = null;
 
+    #[ORM\ManyToOne(inversedBy: 'participant')]
+    private ?Site $site = null;
+
+    #[ORM\ManyToOne(inversedBy: 'participants')]
+    private ?Sortie $sortie = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -185,6 +191,30 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     public function setProfileImage(?string $profileImage): static
     {
         $this->profileImage = $profileImage;
+
+        return $this;
+    }
+
+    public function getSite(): ?Site
+    {
+        return $this->site;
+    }
+
+    public function setSite(?Site $site): static
+    {
+        $this->site = $site;
+
+        return $this;
+    }
+
+    public function getSortie(): ?Sortie
+    {
+        return $this->sortie;
+    }
+
+    public function setSortie(?Sortie $sortie): static
+    {
+        $this->sortie = $sortie;
 
         return $this;
     }
