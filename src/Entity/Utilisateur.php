@@ -2,22 +2,28 @@
 
 namespace App\Entity;
 
-use App\Repository\ParticipantRepository;
+use App\Repository\UtilisateurRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-#[ORM\Entity(repositoryClass: ParticipantRepository::class)]
-class Participant implements UserInterface, PasswordAuthenticatedUserInterface
+#[ORM\Entity(repositoryClass: UtilisateurRepository::class)]
+#[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
+class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 180, unique: true)]
+    #[ORM\Column(length: 180)]
     private ?string $email = null;
 
+    /**
+     * @var list<string> The user roles
+     */
     #[ORM\Column]
     private array $roles = [];
 
@@ -31,16 +37,26 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $name = null;
 
     #[ORM\Column(length: 50)]
-    private ?string $secondName = null;
+    private ?string $surname = null;
 
-    #[ORM\Column(length: 15, nullable: true)]
-    private ?string $telephone = null;
+    #[ORM\Column(length: 20)]
+    private ?string $phone = null;
 
     #[ORM\Column]
     private ?bool $active = null;
 
-    #[ORM\Column(length: 30)]
-    private ?string $pseudo = null;
+
+
+    /**
+     * @var Collection<int, City>
+     */
+    #[ORM\ManyToOne(targetEntity: City::class, inversedBy: 'utilisateurs')]
+    private Collection $city;
+
+    public function __construct()
+    {
+        $this->city = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -71,6 +87,8 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @see UserInterface
+     *
+     * @return list<string>
      */
     public function getRoles(): array
     {
@@ -81,6 +99,9 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
         return array_unique($roles);
     }
 
+    /**
+     * @param list<string> $roles
+     */
     public function setRoles(array $roles): static
     {
         $this->roles = $roles;
@@ -124,26 +145,38 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getSecondName(): ?string
+    public function getSurname(): ?string
     {
-        return $this->secondName;
+        return $this->surname;
     }
 
-    public function setSecondName(string $secondName): static
+    public function setSurname(string $surname): static
     {
-        $this->secondName = $secondName;
+        $this->surname = $surname;
 
         return $this;
     }
 
-    public function getTelephone(): ?string
+    public function getPhone(): ?string
     {
-        return $this->telephone;
+        return $this->phone;
     }
 
-    public function setTelephone(?string $telephone): static
+    public function setPhone(string $phone): static
     {
-        $this->telephone = $telephone;
+        $this->phone = $phone;
+
+        return $this;
+    }
+
+    public function isAdmin(): ?bool
+    {
+        return $this->admin;
+    }
+
+    public function setAdmin(bool $admin): static
+    {
+        $this->admin = $admin;
 
         return $this;
     }
@@ -160,15 +193,31 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getPseudo(): ?string
+    public function getVille(): ?City
     {
-        return $this->pseudo;
+        return $this->city;
     }
 
-    public function setPseudo(string $pseudo): static
+    public function setVille(?City $city): self
     {
-        $this->pseudo = $pseudo;
+        $this->city = $city;
+        return $this;
+    }
+
+    public function addVille(City $city): static
+    {
+        if (!$this->city->contains($city)) {
+            $this->city->add($city);
+        }
 
         return $this;
     }
+
+    public function removeVille(City $city): static
+    {
+        $this->city->removeElement($city);
+
+        return $this;
+    }
+
 }
