@@ -50,17 +50,7 @@ class SearchData
         return $this->id;
     }
 
-    public function getSite(): ?Site
-    {
-        return $this->site;
-    }
 
-    public function setSite(?Site $site): static
-    {
-        $this->site = $site;
-
-        return $this;
-    }
 
     public function getDateStart(): ?\DateTimeInterface
     {
