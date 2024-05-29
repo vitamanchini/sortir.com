@@ -41,17 +41,23 @@ class Sortie
     #[ORM\JoinColumn(nullable: false)]
     private ?Site $site = null;
 
-    #[ORM\OneToMany(targetEntity: Participant::class, mappedBy: 'sortie')]
-    private Collection $participants;
 
     #[ORM\ManyToOne(inversedBy: 'sorties')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Status $status = null;
 
+    #[ORM\ManyToOne(inversedBy: 'organisedSorties')]
+    private ?Participant $organizer = null;
+
+    #[ORM\ManyToMany(targetEntity: Participant::class, mappedBy: 'sorties')]
+    private Collection $participants;
+
     public function __construct()
     {
         $this->participants = new ArrayCollection();
     }
+
+
 
     public function getId(): ?int
     {
@@ -154,6 +160,30 @@ class Sortie
         return $this;
     }
 
+    public function getStatus(): ?Status
+    {
+        return $this->status;
+    }
+
+    public function setStatus(?Status $status): static
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    public function getOrganizer(): ?Participant
+    {
+        return $this->organizer;
+    }
+
+    public function setOrganizer(?Participant $organizer): static
+    {
+        $this->organizer = $organizer;
+
+        return $this;
+    }
+
     /**
      * @return Collection<int, Participant>
      */
@@ -166,7 +196,7 @@ class Sortie
     {
         if (!$this->participants->contains($participant)) {
             $this->participants->add($participant);
-            $participant->setSortie($this);
+            $participant->addSortie($this);
         }
 
         return $this;
@@ -175,23 +205,8 @@ class Sortie
     public function removeParticipant(Participant $participant): static
     {
         if ($this->participants->removeElement($participant)) {
-            // set the owning side to null (unless already changed)
-            if ($participant->getSortie() === $this) {
-                $participant->setSortie(null);
-            }
+            $participant->removeSortie($this);
         }
-
-        return $this;
-    }
-
-    public function getStatus(): ?Status
-    {
-        return $this->status;
-    }
-
-    public function setStatus(?Status $status): static
-    {
-        $this->status = $status;
 
         return $this;
     }

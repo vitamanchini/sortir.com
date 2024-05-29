@@ -4,8 +4,12 @@ declare(strict_types=1);
 
 namespace App\Controller;
 use App\Entity\Participant;
+use App\Entity\SearchData;
+use App\Form\SearchFormType;
 use App\Repository\ParticipantRepository;
+use App\Repository\SortieRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -17,13 +21,34 @@ class MainController extends AbstractController
 
      #[Route("/", name:"main_home")]
 
-    public function home(#[CurrentUser] participant $user): Response
+    public function home(#[CurrentUser] participant $user, SortieRepository $sortieRepository): Response
     {
 
-//        $user= new Participant();
-//        $user = $participantRepository->find()
+        $searchData = new SearchData();
+        $filters = $this->createForm(SearchFormType::class, $searchData);
+
+        $sorties = $sortieRepository->findAll();
         return $this->render('accueil/home.html.twig', [
             'user' => $user,
+            'sorties' => $sorties,
+            'filters' => $filters->createView()
+        ]);
+    }
+    #[Route("/filter", name:"main_filter")]
+    public function filter(#[CurrentUser] participant $user,
+                           SortieRepository $sortieRepository,
+                           Request $request): Response
+    {
+        $searchData = new SearchData();
+
+        $filters = $this->createForm(SearchFormType::class, $searchData);
+
+        $filters->handleRequest($request);
+        $sorties = $sortieRepository->findSearch($searchData);
+        return $this->render('accueil/home.html.twig', [
+            'user' => $user,
+            'sorties' => $sorties,
+            'filters' => $filters->createView()
         ]);
     }
     #[Route("/demo", name:"demo")]
