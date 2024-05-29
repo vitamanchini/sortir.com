@@ -1,7 +1,95 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ parent()}}Accueil{% endblock %}
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/home-page.css') }}">
+{% endblock %}
+
+{% block title %}Accueil{% endblock %}
 {% block main %}
 
+    <section id="user-date-field">
+        <div>
+            <p>Date du jour: {{ "now"|date("d-m-Y") }} </p>
+            <p>Participant: {{ user.name }} {{ user.secondName }}</p>
+        </div>
+    </section>
+    <div>
+        <h2>Filtrer les sortis</h2>
+
+        {{ form(filters) }}
+                    <div class="filters">
+                        <a href="{{ path('main_filter') }}"><button>Rechercher</button></a>
+                    </div>
+
+
+{#        <section class="filter-section">#}
+
+{#            <div class="filters">#}
+{#                <label for="site">Site#}
+{#                    <select>#}
+{#                        <option value="1">1</option>#}
+{#                        <option value="2">2</option>#}
+{#                        <option value="3">3</option>#}
+{#                        <option value="4">4</option>#}
+{#                    </select>#}
+{#                </label>#}
+{#                <label >Le nom de la sortie contient:#}
+{#                    <input type="search" name="search" id="search">#}
+{#                </label>#}
+{#                <label>Entre#}
+{#                    <input type="date" name="datestart" id="datestart"> et#}
+{#                    <input type="date" name="dateend" id="dateend">#}
+{#                </label>#}
+{#            </div>#}
+{#            <div class="filters">#}
+{#                <label>#}
+{#                    <input type="checkbox" name="me-org" id="me-org">#}
+{#                    Sorties dont je suis l'organisatrice#}
+{#                </label>#}
+{#                <label>#}
+{#                    <input type="checkbox" name="me-ins" id="me-ins">#}
+{#                    Sorties auquelles je suis inscrit/e#}
+{#                </label>#}
+{#                <label>#}
+{#                    <input type="checkbox" name="me-non-ins" id="me-non-ins">#}
+{#                    Sorties auquelles je ne suis pas inscrit/e#}
+{#                </label>#}
+{#                <label>#}
+{#                    <input type="checkbox" name="past" id="past">#}
+{#                    Sorties passées#}
+{#                </label>#}
+{#            </div>#}
+{#            <div class="filters">#}
+{#                <a href="{{ path('main_filter') }}"><button>Rechercher</button></a>#}
+{#            </div>#}
+{#        </section>#}
+    </div>
+
+
+    <table>
+        <tr>
+            <td>Nom de la sortie</td>
+            <td>Date de la sortie</td>
+            <td>Clôture</td>
+            <td>Inscrits/places</td>
+            <td>Etat</td>
+            <td>Inscrit</td>
+            <td>Organisateur</td>
+            <td>Actions</td>
+        </tr>
+        {% for sortie in sorties %}
+            <tr>
+                <td>{{ sortie.name }}</td>
+                <td>{{ sortie.dateHourStart }}</td>
+                <td>{{ sortie.dateLimitInscription }}</td>
+                <td>{{ sortie.dateHourStart + sortie.duration*60*60 }}</td>
+                <td>{{ sortie.status }}</td>
+                <td>{{ sortie.dateHourStart }}</td>
+                <td>{{ sortie.site }}</td>
+                <td>Actions</td>
+            </tr>
+        {% endfor %}
+    </table>
+    <a href="{{ path('main_filter') }}"><button>Créer une sortie</button></a>
 
 {% endblock %}

@@ -1,0 +1,16 @@
+
+#user-date-field{
+    display: flex;
+    justify-content: flex-end;
+}
+.filter-section{
+    display: flex;
+}
+.filters{
+    display: flex;
+    flex-direction: column;
+    margin-right: 50px;
+}
+table{
+    height: 400px;
+}
