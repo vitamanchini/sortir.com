@@ -2,30 +2,28 @@
 
 namespace App\Entity;
 
-use App\Repository\UtilisateurRepository;
+use App\Repository\ParticipantRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-#[ORM\Entity(repositoryClass: UtilisateurRepository::class)]
-#[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
-class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
+#[ORM\Entity(repositoryClass: ParticipantRepository::class)]
+#[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
+class Participant implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 180)]
+    #[ORM\Column(length: 180, unique: true)]
     private ?string $email = null;
 
-    /**
-     * @var list<string> The user roles
-     */
     #[ORM\Column]
-    private array $roles = [];
+    private array $roles = ["ROLE_USER"];
 
     /**
      * @var string The hashed password
@@ -37,26 +35,37 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $name = null;
 
     #[ORM\Column(length: 50)]
-    private ?string $surname = null;
+    private ?string $secondName = null;
 
-    #[ORM\Column(length: 20)]
-    private ?string $phone = null;
+    #[ORM\Column(length: 15, nullable: true)]
+    private ?string $telephone = null;
 
     #[ORM\Column]
     private ?bool $active = null;
 
 
+    #[ORM\Column(length: 30)]
+    private ?string $pseudo = null;
 
-    /**
-     * @var Collection<int, City>
-     */
-    #[ORM\ManyToOne(targetEntity: City::class, inversedBy: 'utilisateurs')]
-    private Collection $city;
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $profileImage = null;
+
+    #[ORM\ManyToOne(inversedBy: 'participant')]
+    private ?Site $site = null;
+
+    #[ORM\OneToMany(targetEntity: Sortie::class, mappedBy: 'organizer')]
+    private Collection $organisedSorties;
+
+    #[ORM\ManyToMany(targetEntity: Sortie::class, inversedBy: 'participants')]
+    private Collection $sorties;
 
     public function __construct()
     {
-        $this->city = new ArrayCollection();
+        $this->organisedSorties = new ArrayCollection();
+        $this->sorties = new ArrayCollection();
     }
+
+
 
     public function getId(): ?int
     {
@@ -145,38 +154,26 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getSurname(): ?string
+    public function getSecondName(): ?string
     {
-        return $this->surname;
+        return $this->secondName;
     }
 
-    public function setSurname(string $surname): static
+    public function setSecondName(string $secondName): static
     {
-        $this->surname = $surname;
+        $this->secondName = $secondName;
 
         return $this;
     }
 
-    public function getPhone(): ?string
+    public function getTelephone(): ?string
     {
-        return $this->phone;
+        return $this->telephone;
     }
 
-    public function setPhone(string $phone): static
+    public function setTelephone(?string $telephone): static
     {
-        $this->phone = $phone;
-
-        return $this;
-    }
-
-    public function isAdmin(): ?bool
-    {
-        return $this->admin;
-    }
-
-    public function setAdmin(bool $admin): static
-    {
-        $this->admin = $admin;
+        $this->telephone = $telephone;
 
         return $this;
     }
@@ -193,31 +190,95 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getVille(): ?City
+    public function getPseudo(): ?string
     {
-        return $this->city;
+        return $this->pseudo;
     }
 
-    public function setVille(?City $city): self
+    public function setPseudo(string $pseudo): static
     {
-        $this->city = $city;
+        $this->pseudo = $pseudo;
+
         return $this;
     }
 
-    public function addVille(City $city): static
+    public function getProfileImage(): ?string
     {
-        if (!$this->city->contains($city)) {
-            $this->city->add($city);
+        return $this->profileImage;
+    }
+
+    public function setProfileImage(?string $profileImage): static
+    {
+        $this->profileImage = $profileImage;
+
+        return $this;
+    }
+
+    public function getSite(): ?Site
+    {
+        return $this->site;
+    }
+
+    public function setSite(?Site $site): static
+    {
+        $this->site = $site;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Sortie>
+     */
+    public function getOrganisedSorties(): Collection
+    {
+        return $this->organisedSorties;
+    }
+
+    public function addOrganisedSortie(Sortie $organisedSortie): static
+    {
+        if (!$this->organisedSorties->contains($organisedSortie)) {
+            $this->organisedSorties->add($organisedSortie);
+            $organisedSortie->setOrganizer($this);
         }
 
         return $this;
     }
 
-    public function removeVille(City $city): static
+    public function removeOrganisedSortie(Sortie $organisedSortie): static
     {
-        $this->city->removeElement($city);
+        if ($this->organisedSorties->removeElement($organisedSortie)) {
+            // set the owning side to null (unless already changed)
+            if ($organisedSortie->getOrganizer() === $this) {
+                $organisedSortie->setOrganizer(null);
+            }
+        }
 
         return $this;
     }
+
+    /**
+     * @return Collection<int, Sortie>
+     */
+    public function getSorties(): Collection
+    {
+        return $this->sorties;
+    }
+
+    public function addSortie(Sortie $sortie): static
+    {
+        if (!$this->sorties->contains($sortie)) {
+            $this->sorties->add($sortie);
+        }
+
+        return $this;
+    }
+
+    public function removeSortie(Sortie $sortie): static
+    {
+        $this->sorties->removeElement($sortie);
+
+        return $this;
+    }
+
 
 }

@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\CityRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: CityRepository::class)]
@@ -15,21 +16,18 @@ class City
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 50)]
+    #[ORM\Column(length: 30)]
     private ?string $name = null;
 
     #[ORM\Column(length: 5)]
     private ?string $postCode = null;
 
-    /**
-     * @var Collection<int, Utilisateur>
-     */
-    #[ORM\OneToMany(targetEntity: Utilisateur::class, mappedBy: 'ville')]
-    private Collection $utilisateurs;
+    #[ORM\OneToMany(targetEntity: Place::class, mappedBy: 'relation')]
+    private Collection $places;
 
     public function __construct()
     {
-        $this->utilisateurs = new ArrayCollection();
+        $this->places = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -62,27 +60,30 @@ class City
     }
 
     /**
-     * @return Collection<int, Utilisateur>
+     * @return Collection<int, Place>
      */
-    public function getUtilisateurs(): Collection
+    public function getPlaces(): Collection
     {
-        return $this->utilisateurs;
+        return $this->places;
     }
 
-    public function addUtilisateur(Utilisateur $utilisateur): static
+    public function addPlace(Place $place): static
     {
-        if (!$this->utilisateurs->contains($utilisateur)) {
-            $this->utilisateurs->add($utilisateur);
-            $utilisateur->addVille($this);
+        if (!$this->places->contains($place)) {
+            $this->places->add($place);
+            $place->setCity($this);
         }
 
         return $this;
     }
 
-    public function removeUtilisateur(Utilisateur $utilisateur): static
+    public function removePlace(Place $place): static
     {
-        if ($this->utilisateurs->removeElement($utilisateur)) {
-            $utilisateur->removeVille($this);
+        if ($this->places->removeElement($place)) {
+            // set the owning side to null (unless already changed)
+            if ($place->getCity() === $this) {
+                $place->setCity(null);
+            }
         }
 
         return $this;
