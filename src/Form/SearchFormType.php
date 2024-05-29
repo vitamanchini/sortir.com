@@ -16,7 +16,7 @@ class SearchFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('site', ChoiceType::class, [
+            ->add('sites', ChoiceType::class, [
                 'choices' =>[
 
                 ]
