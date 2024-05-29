@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/user-profile.css') }}">
+{% endblock %}
+
+{% block title %}Hello ParticipantController!{% endblock %}
+
+{% block main %}
+
+    <article>
+        <h2></h2>
+        <div id="profile-info">
+            <img src="{{ asset('assets/' ~ user.profileImage) }}" alt="">
+            <table class="text20">
+                <tr>
+                    <td>Prenom:</td>
+                    <td>{{ user.name }}</td>
+                </tr>
+                <tr>
+                    <td>Nom:</td>
+                    <td>{{ user.secondName }}</td>
+                </tr>
+                <tr>
+                    <td>Telephone:</td>
+                    <td>{{ user.telephone }}</td>
+                </tr>
+                <tr>
+                    <td>Email:</td>
+                    <td>{{ user.email }}</td>
+                </tr>
+                {#            <tr> #}
+                {#                <td>Ville de rattachement: </td> #}
+                {#                <td>{{ user. }}</td> #}
+                {#            </tr> #}
+            </table>
+        </div>
+
+    </article>
+
+{% endblock %}

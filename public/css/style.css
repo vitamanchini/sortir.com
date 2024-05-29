@@ -1,10 +1,62 @@
+
+body{
+    margin: auto;
+    width: 1350px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+main{
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+}
+#weblogo{
+    position: absolute;
+}
+#website-name{
+    font-size: 5rem;
+    position: absolute;
+    margin-left: 150px;
+}
+nav{
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 100px;
+}
 ul{
     display: flex;
     text-decoration: none;
 
 }
 li{
-    background-color: darkgreen;
-    color: white;
-    margin: 20px;
+    display: flex;
+    margin: 7px;
+    text-align: center;
+    justify-content: center;
 }
+.navigation-links{
+    color: white;
+    text-decoration: none;
+    background-color: darkgreen;
+    width: auto;
+    padding: 10px;
+    border-radius: 10px;
+}
+a{
+    text-decoration: none;
+    color: inherit;
+}
+.text20{
+    font-size: 20px;
+}
+
+footer{
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    text-align: center;
+
+}
+
