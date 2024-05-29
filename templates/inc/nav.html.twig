@@ -1,12 +1,20 @@
-<nav>
+<a href="{{ path('main_home') }}"><img id="weblogo" src="{{ asset('assets/weblogo.webp') }}" alt="logo"></a>
+<h1 id="website-name"><a href="{{ path('main_home') }}">SORTIR</a></h1>
+
+<nav class="text20">
     <ul>
-        <li><a href="{{ path('main_home') }}">Villes</a></li>
-        <li><a href="{{ path('main_home') }}">Sites</a></li>
-        <li><a href="{{ path('main_home') }}">Accueil</a></li>
-        <li><a href="{{ path('main_home') }}">Mon profil</a></li>
-        <li><a href="{{ path('main_home') }}">Créer nouveau profil</a></li>
-        <li><a href="{{ path('main_home') }}">Se connecter</a></li>
-        <li><a href="{{ path('main_home') }}">Se déconnecter</a></li>
+        <li><a class="navigation-links" href="{{ path('main_home') }}">Villes</a></li>
+        <li><a class="navigation-links" href="{{ path('main_home') }}">Sites</a></li>
+        <li><a class="navigation-links" href="{{ path('main_home') }}">Accueil</a></li>
+        {% if app.user %}
+
+        <li><a class="navigation-links" href="{{ path('main_home') }}">Mon profil</a></li>
+        <li><a class="navigation-links" href="{{ path('app_register') }}">Créer nouveau profil</a></li>
+        <li><a class="navigation-links" href="{{ path('app_logout') }}">Se déconnecter</a></li>
+            {% else %}
+
+                <li><a class="navigation-links" href="{{ path('app_login') }}">Se connecter</a></li>
+        {% endif %}
 
     </ul>
 </nav>

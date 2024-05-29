@@ -1,0 +1,16 @@
+
+#profile-info{
+    display: flex;
+}
+table{
+    margin-left: 50px;
+    height: 300px;
+    /*font-size: 20px;*/
+}
+tr{
+    margin-top: 10px;
+}
+td{
+    width: 200px;
+
+}

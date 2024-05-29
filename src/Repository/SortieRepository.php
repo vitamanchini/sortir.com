@@ -52,56 +52,56 @@ class SortieRepository extends ServiceEntityRepository
 //     */
     public function findSearch(SearchData $search): array
     {
-        $query = $this->createQueryBuilder('s')
-            ->select('c', 's')
-            ->join('p.categories', 'c');
-
-//        if (!empty($search->sites)) {
+//        $query = $this->createQueryBuilder('s')
+//            ->select('c', 's')
+//            ->join('p.categories', 'c');
+//
+////        if (!empty($search->sites)) {
+////            $query = $query
+////                ->andWhere('c.id IN (:categories)')
+////                ->setParameter('categories', $search->categories);
+////        }
+//        if (!empty($search->search)) {
 //            $query = $query
-//                ->andWhere('c.id IN (:categories)')
-//                ->setParameter('categories', $search->categories);
+//                ->andWhere('s.name LIKE :search');
+////                ->setParameter('search', "%{$search->search}%");
 //        }
-        if (!empty($search->search)) {
-            $query = $query
-                ->andWhere('s.name LIKE :search');
-//                ->setParameter('search', "%{$search->search}%");
-        }
-
-        if (!empty($search->dateStart)) {
-            $query = $query
-                ->andWhere('s.dateHourStart >= :dateStart');
-//                ->setParameter('min', $search->min);
-        }
-
-        if (!empty($search->dateEnd)) {
-            $query = $query
-                ->andWhere('s.dateHourStart + s.duration*3600 <= :dateEnd');
-//                ->setParameter('max', $search->max);
-        }
-
-//        if (!empty($search->promo)) {
+//
+//        if (!empty($search->dateStart)) {
 //            $query = $query
-//                ->andWhere('p.promo = 1');
+//                ->andWhere('s.dateHourStart >= :dateStart');
+////                ->setParameter('min', $search->min);
 //        }
-//        if (!empty($search->promo)) {
+//
+//        if (!empty($search->dateEnd)) {
 //            $query = $query
-//                ->andWhere('p.promo = 1');
+//                ->andWhere('s.dateHourStart + s.duration*3600 <= :dateEnd');
+////                ->setParameter('max', $search->max);
 //        }
-//        if (!empty($search->promo)) {
+//
+////        if (!empty($search->promo)) {
+////            $query = $query
+////                ->andWhere('p.promo = 1');
+////        }
+////        if (!empty($search->promo)) {
+////            $query = $query
+////                ->andWhere('p.promo = 1');
+////        }
+////        if (!empty($search->promo)) {
+////            $query = $query
+////                ->andWhere('p.promo = 1');
+////        }
+//        if (!empty($search->finishedEvents)) {
 //            $query = $query
-//                ->andWhere('p.promo = 1');
+//                ->andWhere('s.state = 5');
 //        }
-        if (!empty($search->finishedEvents)) {
-            $query = $query
-                ->andWhere('s.state = 5');
-        }
-
-
-//        return $this->paginator->paginate(
-//            $query,
-//            $search->page,
-//            9
-//        );
+//
+//
+////        return $this->paginator->paginate(
+////            $query,
+////            $search->page,
+////            9
+////        );
         return $this->findAll();
     }
 }

@@ -19,8 +19,8 @@ class City
     #[ORM\Column(length: 30)]
     private ?string $name = null;
 
-    #[ORM\Column(length: 5)]
-    private ?string $postCode = null;
+    #[ORM\Column(type: Types::SMALLINT)]
+    private ?int $postalCode = null;
 
     #[ORM\OneToMany(targetEntity: Place::class, mappedBy: 'relation')]
     private Collection $places;
