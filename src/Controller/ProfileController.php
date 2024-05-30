@@ -2,7 +2,11 @@
 
 namespace App\Controller;
 
+use App\Form\ParticipantType;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -17,7 +21,7 @@ class ProfileController extends AbstractController
         if (!$user) {
             throw $this->createAccessDeniedException('Vous devez être connecté pour accéder à cette page.');
         }
-        $form = $this->createForm(UtilisateurType::class, $user);
+        $form = $this->createForm(ParticipantType::class, $user);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
