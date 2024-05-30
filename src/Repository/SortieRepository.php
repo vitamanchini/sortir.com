@@ -22,6 +22,17 @@ class SortieRepository extends ServiceEntityRepository
         parent::__construct($registry, Sortie::class);
     }
 
+    public function findVisibleSorties(\DateTime $oneMonthAgo, $user): array
+    {
+        $qb = $this->createQueryBuilder('s')
+            ->where('s.dateHourStart >= :oneMonthAgo OR s.organizer = :user OR :isAdmin = true')
+            ->setParameter('oneMonthAgo', $oneMonthAgo)
+            ->setParameter('user', $user)
+            ->setParameter('isAdmin', in_array('ROLE_ADMIN', $user->getRoles()));
+
+        return $qb->getQuery()->getResult();
+    }
+
 //    /**
 //     * @return Sortie[] Returns an array of Sortie objects
 //     */

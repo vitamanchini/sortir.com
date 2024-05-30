@@ -2,13 +2,16 @@
 
 namespace App\Entity;
 
+use App\EventListener\SortieListener;
 use App\Repository\SortieRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 #[ORM\Entity(repositoryClass: SortieRepository::class)]
+#[ORM\EntityListeners([SortieListener::class])]
 class Sortie
 {
     #[ORM\Id]
@@ -210,4 +213,38 @@ class Sortie
 
         return $this;
     }
+
+    public function canShowDetail(?Participant $user): bool
+    {
+        // Vérifier si l'organisateur est différent de l'utilisateur actuel
+        if ($this->organizer === $user) {
+            return false;
+        }
+
+        // Vérifier si le statut est "en cours" ou "ouvert"
+        $allowedStatuses = [2, 4];
+        if (!in_array($this->status->getLabel(), $allowedStatuses, true)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public function canUnregister(?Participant $user): bool
+    {
+        // Vérifier si l'utilisateur est inscrit à la sortie
+        if (!$this->participants->contains($user)) {
+            return false;
+        }
+
+        // Vérifier si le statut permet le désistement (par exemple, "ouvert" ou "en cours")
+        $allowedStatuses = [2, 4];
+        if (!in_array($this->status->getLabel(), $allowedStatuses, true)) {
+            return false;
+        }
+
+        return true;
+    }
+
+
 }
