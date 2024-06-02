@@ -129,7 +129,6 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/twig/twig" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/webmozart/assert" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/jawira/case-converter" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/sensio/framework-extra-bundle" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/warslett/table-builder" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/warslett/table-builder-bundle" />
     </content>

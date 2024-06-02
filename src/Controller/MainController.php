@@ -34,11 +34,8 @@ class MainController extends AbstractController
         $filters->handleRequest($request);
         if ($filters->isSubmitted()) {
             $sorties = $sortieRepository->findSearch($searchData);
-
-
         }
 
-//dump($sorties);
         return $this->render('accueil/home.html.twig', [
             'user' => $user,
             'sorties' => $sorties,
@@ -90,5 +87,4 @@ class MainController extends AbstractController
     {
 
     }
-//    #[Route("/amountInscribed/{idSortie}/{idParticipant}", name:"amountInscribed")]
 }

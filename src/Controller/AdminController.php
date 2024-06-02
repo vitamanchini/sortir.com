@@ -22,7 +22,7 @@ class AdminController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'create-user', methods: ['GET', 'POST'])]
+    #[Route('/new', name: 'create-user')]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $participant = new Participant();
@@ -33,7 +33,7 @@ class AdminController extends AbstractController
             $entityManager->persist($participant);
             $entityManager->flush();
 
-            return $this->redirectToRoute('page', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('page');
         }
 
         return $this->render('admin/create-user.html.twig', [
@@ -43,7 +43,7 @@ class AdminController extends AbstractController
     }
 
 
-    #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'])]
+    #[Route('/{id}/edit', name: 'edit')]
     public function edit(Request $request, Participant $participant, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(ParticipantType::class, $participant);
@@ -52,7 +52,7 @@ class AdminController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            return $this->redirectToRoute('page', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('page');
         }
 
         return $this->renderForm('admin/edit.html.twig', [
@@ -61,7 +61,7 @@ class AdminController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_admin_delete', methods: ['POST'])]
+    #[Route('/{id}', name: 'app_admin_delete')]
     public function delete(Request $request, Participant $participant, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$participant->getId(), $request->request->get('_token'))) {
@@ -69,6 +69,6 @@ class AdminController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('app_admin_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_admin_index');
     }
 }
