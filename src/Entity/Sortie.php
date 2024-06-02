@@ -38,7 +38,7 @@ class Sortie
     private ?Place $place = null;
 
     #[ORM\ManyToOne(inversedBy: 'sortie')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private ?Site $site = null;
 
 

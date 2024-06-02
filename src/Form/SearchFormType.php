@@ -3,6 +3,9 @@
 namespace App\Form;
 
 use App\Entity\SearchData;
+use App\Entity\Site;
+use App\Repository\SiteRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -15,31 +18,39 @@ class SearchFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder
-            ->add('sites', ChoiceType::class, [
-                'choices' =>[
-
-                ]
-            ])
-            ->add('search', SearchType::class)
-            ->add('dateStart', DateType::class, [
-                'html5'=> true,
-                'widget' => 'single_text'
-            ])
-            ->add('dateEnd', DateType::class, [
-                'html5'=> true
-            ])
-            ->add('choiseMeOrganisator', CheckboxType::class)
-            ->add('choiseMeInscribed', CheckboxType::class)
-            ->add('choiseMeNotInscribed', CheckboxType::class)
-            ->add('finishedEvents', CheckboxType::class)
-
-        ;
+        $sites =
+            $builder
+                ->add('site', EntityType::class, [
+                    'class' => Site::class,
+                    'choice_label' => 'name',
+                    'label' => 'Site organisateur '
+                ])
+                ->add('search', SearchType::class, [
+                    'label' => 'Le nom de la sortie contient'])
+                ->add('dateStart', DateType::class, [
+                    'html5' => true,
+                    'widget' => 'single_text',
+                    'label' => 'Entre '
+                ])
+                ->add('dateEnd', DateType::class, [
+                    'html5' => true,
+                    'widget' => 'single_text',
+                    'label' => ' et '
+                ])
+                ->add('choiseMeOrganisator', CheckboxType::class, [
+                    'label' => 'Sorties dont je suis l\'organisatrice'])
+                ->add('choiseMeInscribed', CheckboxType::class, [
+                    'label' => 'Sorties auquelles je suis inscrit/e'])
+                ->add('choiseMeNotInscribed', CheckboxType::class, [
+                    'label' => 'Sorties auquelles je ne suis pas inscrit/e'])
+                ->add('finishedEvents', CheckboxType::class, [
+                    'label' => 'Sorties passées']);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
+            'required' => false,
             'data_class' => SearchData::class,
             'method' => 'GET',
             'csrf_protection' => false

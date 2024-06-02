@@ -1,0 +1,9 @@
+#admin-functions{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    li{
+        text-align: left;
+    display: block;
+    }
+}

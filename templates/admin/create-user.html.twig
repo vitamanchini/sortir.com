@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/home-page.css') }}">
+{% endblock %}
+
+{% block title %}Accueil{% endblock %}
+{% block main %}
+    <h1>Create new Participant</h1>
+
+    {{ include('admin/_form.html.twig') }}
+
+    <a href="{{ path('app_admin_page') }}">back to list</a>
+{% endblock %}
+    {% block scripts %}
+{#        <script src="{{ asset('scripts/home-page.js') }}"></script>#}
+    {% endblock %}
