@@ -22,7 +22,7 @@ class City
     #[ORM\Column(type: Types::SMALLINT)]
     private ?int $postalCode = null;
 
-    #[ORM\OneToMany(targetEntity: Place::class, mappedBy: 'relation')]
+    #[ORM\OneToMany(targetEntity: Place::class, mappedBy: 'city')]
     private Collection $places;
 
     public function __construct()

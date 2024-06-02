@@ -6,7 +6,6 @@ namespace App\Controller;
 use App\Entity\Participant;
 use App\Entity\SearchData;
 use App\Form\SearchFormType;
-use App\Repository\ParticipantRepository;
 use App\Repository\SortieRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,40 +18,57 @@ class MainController extends AbstractController
 {
 
 
-     #[Route("/", name:"main_home")]
-
-    public function home(#[CurrentUser] participant $user, SortieRepository $sortieRepository): Response
+    #[Route("/", name: "main_home")]
+    public function home(#[CurrentUser] participant $user,
+                         SortieRepository           $sortieRepository,
+                         Request                    $request,
+                         EntityManagerInterface     $entityManager
+    ): Response
     {
-
-        $searchData = new SearchData();
-        $filters = $this->createForm(SearchFormType::class, $searchData);
-
         $sorties = $sortieRepository->findAll();
-        return $this->render('accueil/home.html.twig', [
-            'user' => $user,
-            'sorties' => $sorties,
-            'filters' => $filters->createView()
-        ]);
-    }
-    #[Route("/filter", name:"main_filter")]
-    public function filter(#[CurrentUser] participant $user,
-                           SortieRepository $sortieRepository,
-                           Request $request): Response
-    {
-        $searchData = new SearchData();
 
+        $searchData = new SearchData();
+        $searchData->setUserId($user->getId());
         $filters = $this->createForm(SearchFormType::class, $searchData);
 
         $filters->handleRequest($request);
-        $sorties = $sortieRepository->findSearch($searchData);
+        if ($filters->isSubmitted()) {
+            $sorties = $sortieRepository->findSearch($searchData);
+
+
+        }
+
+//dump($sorties);
         return $this->render('accueil/home.html.twig', [
             'user' => $user,
             'sorties' => $sorties,
             'filters' => $filters->createView()
         ]);
     }
-    #[Route("/demo", name:"demo")]
-    public function demo(EntityManagerInterface $entityManager) : Response
+//    #[Route("/filter", name:"main_filter")]
+//    public function filter(#[CurrentUser] participant $user,
+//                           SortieRepository $sortieRepository,
+//                           Request $request,
+//                           EntityManagerInterface $entityManager): Response
+//    {
+//        $searchData = new SearchData();
+//
+//        $filters = $this->createForm(SearchFormType::class, $searchData);
+//
+//        $filters->handleRequest($request);
+//        $sorties = $sortieRepository->findSearch($searchData);
+//        if($filters->isSubmitted()){
+//            $entityManager->persist($searchData);
+//            $entityManager->flush();
+//        }
+//        return $this->render('accueil/home.html.twig', [
+//            'user' => $user,
+//            'sorties' => $sorties,
+//            'filters' => $filters->createView()
+//        ]);
+//    }
+    #[Route("/demo", name: "demo")]
+    public function demo(EntityManagerInterface $entityManager): Response
     {
         $user = new Participant();
         $user->setEmail("demo@mail.com")
@@ -70,4 +86,9 @@ class MainController extends AbstractController
         return $this->render('accueil/home.html.twig');
     }
 
+    public function checkMeInscribed($idSortie, $idParticipant, SortieRepository $sortieRepository)
+    {
+
+    }
+//    #[Route("/amountInscribed/{idSortie}/{idParticipant}", name:"amountInscribed")]
 }

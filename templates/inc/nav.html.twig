@@ -3,13 +3,25 @@
 
 <nav class="text20">
     <ul>
-        <li><a class="navigation-links" href="{{ path('main_home') }}">Villes</a></li>
-        <li><a class="navigation-links" href="{{ path('main_home') }}">Sites</a></li>
-        <li><a class="navigation-links" href="{{ path('main_home') }}">Accueil</a></li>
-        {% if app.user %}
+        {% if is_granted('ROLE_ADMIN') %}
+{#            <li><a class="navigation-links admin-links" href="{{ path('app_register') }}">Créer nouveau profil#}
+{#            <p class="small-admin-writing">Admin</p></a>#}
+{#            </li>#}
+            <li><a class="navigation-links admin-links" href="{{ path('admin_page') }}">Espace administrateur
+            <p class="small-admin-writing">Admin</p></a>
+            </li>
+            <li><a class="navigation-links admin-links" href="{{ path('main_home') }}">Villes
+                <p class="small-admin-writing">Admin</p></a>
+            </li>
+            <li><a class="navigation-links admin-links" href="{{ path('main_home') }}">Sites
+                <p class="small-admin-writing">Admin</p></a>
+            </li>
+        {% endif %}
 
-        <li><a class="navigation-links" href="{{ path('main_home') }}">Mon profil</a></li>
-        <li><a class="navigation-links" href="{{ path('app_register') }}">Créer nouveau profil</a></li>
+        {% if is_granted('ROLE_ADMIN', 'ROLE_USER')%}
+            <li><a class="navigation-links" href="{{ path('main_home') }}">Accueil</a></li>
+        <li><a class="navigation-links" href="{{ path('app_participant', {id: app.user.id}) }}">Mon profil</a></li>
+
         <li><a class="navigation-links" href="{{ path('app_logout') }}">Se déconnecter</a></li>
             {% else %}
 

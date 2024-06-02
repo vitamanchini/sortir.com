@@ -4,14 +4,14 @@
     <link rel="stylesheet" href="{{ asset('css/user-profile.css') }}">
 {% endblock %}
 
-{% block title %}Hello ParticipantController!{% endblock %}
+{% block title %}Mon profil{% endblock %}
 
 {% block main %}
 
     <article>
-        <h2></h2>
+        <h2>{{ user.pseudo }}</h2>
         <div id="profile-info">
-            <img src="{{ asset('assets/' ~ user.profileImage) }}" alt="">
+            <img id="profileImage" src="{{ asset('assets/' ~ user.profileImage) }}" alt="">
             <table class="text20">
                 <tr>
                     <td>Prenom:</td>
@@ -29,10 +29,10 @@
                     <td>Email:</td>
                     <td>{{ user.email }}</td>
                 </tr>
-                {#            <tr> #}
-                {#                <td>Ville de rattachement: </td> #}
-                {#                <td>{{ user. }}</td> #}
-                {#            </tr> #}
+                <tr>
+                    <td>Ville de rattachement:</td>
+                    <td>{{ user.site.name }}</td>
+                </tr>
             </table>
         </div>
 

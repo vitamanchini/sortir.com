@@ -1,42 +1,58 @@
 
-body{
+body {
     margin: auto;
     width: 1350px;
     display: flex;
     flex-direction: column;
     justify-content: center;
 }
-main{
+
+main {
     width: 100%;
     display: flex;
-    justify-content: space-around;
+    flex-direction: column;
+    justify-content: flex-start;
+    /*justify-content: space-around;*/
+    min-height: calc(100vh - 180px - 30px - 30px);
+    margin-bottom: 30px;
 }
-#weblogo{
+
+#weblogo {
     position: absolute;
 }
-#website-name{
-    font-size: 5rem;
+
+#website-name {
+    background: -webkit-linear-gradient(140deg, darkgreen, #04aa6d);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 7rem;
     position: absolute;
     margin-left: 150px;
+    font-weight: 700;
 }
-nav{
+
+nav {
     width: 100%;
     display: flex;
     justify-content: flex-end;
     margin-bottom: 100px;
+    flex-wrap: wrap;
 }
-ul{
+
+ul {
     display: flex;
     text-decoration: none;
 
 }
-li{
+
+li {
     display: flex;
     margin: 7px;
     text-align: center;
     justify-content: center;
 }
-.navigation-links{
+
+.navigation-links {
     color: white;
     text-decoration: none;
     background-color: darkgreen;
@@ -44,19 +60,139 @@ li{
     padding: 10px;
     border-radius: 10px;
 }
-a{
+
+.small-admin-writing {
+    font-size: 15px;
+    color: #09db8d;
+    text-shadow: rgb(255, 255, 255) 0px 0px 20px;
+
+}
+
+.navigation-links:hover {
+    background-color: #04AA6D;
+}
+.admin-links{
+    display: block;
+}
+a {
     text-decoration: none;
     color: inherit;
 }
-.text20{
+
+.text20 {
     font-size: 20px;
 }
 
-footer{
+footer {
     width: 100%;
-    position: absolute;
+    position: static;
     bottom: 0;
+    left: 0;
     text-align: center;
-
+    background-color: #999999;
+    height: 30px;
 }
 
+
+@media screen and (max-width: 500px) {
+
+    body {
+
+        margin: auto;
+        width: auto;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    main {
+        min-height: calc(100vh - 147px - 30px - 30px);
+        width: auto;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        margin-bottom: 50px;
+    }
+
+    #weblogo {
+        position: static;
+        width: 80px;
+    }
+
+    #website-name {
+        background: -webkit-linear-gradient(140deg, darkgreen, #09db8d);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-size: 4rem;
+        position: absolute;
+        top: 0;
+        margin-left: 90px;
+        font-weight: 700;
+    }
+
+    nav {
+        display: flex;
+        flex-wrap: wrap;
+        margin-bottom: 0;
+        width: 100%;
+        justify-content: flex-end;
+
+    }
+
+    ul {
+        display: flex;
+        text-decoration: none;
+
+    }
+
+    li {
+        display: flex;
+        margin: 7px;
+        text-align: center;
+        justify-content: center;
+    }
+
+    .navigation-links {
+        color: white;
+        text-decoration: none;
+        background-color: darkgreen;
+        width: auto;
+        padding: 5px;
+        border-radius: 5px;
+        font-size: 18px;
+
+    }
+
+    .navigation-links:hover {
+        background-color: #04AA6D;
+    }
+    .admin-links{
+        display: none;
+    }
+    a {
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .text20 {
+        font-size: 20px;
+    }
+
+    footer {
+        height: auto;
+        width: 100%;
+        position: static;
+        bottom: 0;
+        left: 0;
+        text-align: center;
+        background-color: #999999;
+    }
+}
+
+.h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
+    font-weight: unset;
+}
+
+::selection {
+    background: #09db8d !important;
+}

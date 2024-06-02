@@ -13,7 +13,10 @@ class ParticipantController extends AbstractController
     public function find(int $id, ParticipantRepository $participantRepository): Response
     {
         $user = $participantRepository->find($id);
-        dump($user);
+
+        if (!$user) {
+            throw $this->createNotFoundException('The user does not exist');
+        }
         return $this->render('participant/index.html.twig', [
             'user' => $user,
         ]);

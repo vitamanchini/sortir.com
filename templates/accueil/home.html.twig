@@ -14,82 +14,75 @@
         </div>
     </section>
     <div>
-        <h2>Filtrer les sortis</h2>
+        <div id="filtering">
+            <h2>Filtrer les sortis</h2>
+            <img id="filterslogo" src="{{ asset('assets/filterslogo.png') }}" alt="filters">
+        </div>
 
-        {{ form(filters) }}
-                    <div class="filters">
-                        <a href="{{ path('main_filter') }}"><button>Rechercher</button></a>
-                    </div>
+        {{ form_start(filters) }}
+        <div id="filter-section" class="is-hidden">
+            <div id="filters-first-col">
+                {{ form_row(filters.site) }}
+                {{ form_row(filters.search) }}
+                <div id="dates-filter">
+                    {{ form_row(filters.dateStart) }}
+                    {{ form_row(filters.dateEnd) }}
+                </div>
+
+            </div>
+            <div id="filters-second-col">
+
+                {{ form_row(filters.choiseMeOrganisator) }}
+                {{ form_row(filters.choiseMeInscribed) }}
+                {{ form_row(filters.choiseMeNotInscribed) }}
+                {{ form_row(filters.finishedEvents) }}
+            </div>
+            <div id="filters-third-col">
+                <button id="search">Rechercher</button>
+            </div>
+        </div>
+
+        {{ form_end(filters) }}
 
 
-{#        <section class="filter-section">#}
-
-{#            <div class="filters">#}
-{#                <label for="site">Site#}
-{#                    <select>#}
-{#                        <option value="1">1</option>#}
-{#                        <option value="2">2</option>#}
-{#                        <option value="3">3</option>#}
-{#                        <option value="4">4</option>#}
-{#                    </select>#}
-{#                </label>#}
-{#                <label >Le nom de la sortie contient:#}
-{#                    <input type="search" name="search" id="search">#}
-{#                </label>#}
-{#                <label>Entre#}
-{#                    <input type="date" name="datestart" id="datestart"> et#}
-{#                    <input type="date" name="dateend" id="dateend">#}
-{#                </label>#}
-{#            </div>#}
-{#            <div class="filters">#}
-{#                <label>#}
-{#                    <input type="checkbox" name="me-org" id="me-org">#}
-{#                    Sorties dont je suis l'organisatrice#}
-{#                </label>#}
-{#                <label>#}
-{#                    <input type="checkbox" name="me-ins" id="me-ins">#}
-{#                    Sorties auquelles je suis inscrit/e#}
-{#                </label>#}
-{#                <label>#}
-{#                    <input type="checkbox" name="me-non-ins" id="me-non-ins">#}
-{#                    Sorties auquelles je ne suis pas inscrit/e#}
-{#                </label>#}
-{#                <label>#}
-{#                    <input type="checkbox" name="past" id="past">#}
-{#                    Sorties passées#}
-{#                </label>#}
-{#            </div>#}
-{#            <div class="filters">#}
-{#                <a href="{{ path('main_filter') }}"><button>Rechercher</button></a>#}
-{#            </div>#}
-{#        </section>#}
     </div>
 
 
-    <table>
+    <table id="sorties-table">
         <tr>
-            <td>Nom de la sortie</td>
-            <td>Date de la sortie</td>
-            <td>Clôture</td>
-            <td>Inscrits/places</td>
-            <td>Etat</td>
-            <td>Inscrit</td>
-            <td>Organisateur</td>
-            <td>Actions</td>
+            <th>Nom de la sortie</th>
+            <th>Date de la sortie</th>
+            <th id="invis">Clôture</th>
+            <th id="invis">Inscrits/places</th>
+            <th id="invis">Etat</th>
+            <th id="invis">Inscrit</th>
+            <th id="invis">Organisateur</th>
+            <th>Actions</th>
         </tr>
         {% for sortie in sorties %}
             <tr>
                 <td>{{ sortie.name }}</td>
-                <td>{{ sortie.dateHourStart }}</td>
-                <td>{{ sortie.dateLimitInscription }}</td>
-                <td>{{ sortie.dateHourStart + sortie.duration*60*60 }}</td>
-                <td>{{ sortie.status }}</td>
-                <td>{{ sortie.dateHourStart }}</td>
-                <td>{{ sortie.sites }}</td>
+                <td>{{ sortie.dateHourStart | date('H-i / d-m-Y') }}</td>
+                <td id="invis">{{ sortie.dateLimitInscription | date('d-m-Y') }}</td>
+                <td id="invis">{{ sortie.participants | length }} / {{ sortie.maxInscriptions }}</td>
+                <td id="invis">{{ sortie.status.label }}</td>
+
+                {% if sortie.participants.user.id is defined %}
+                    <td id="invis">Inscribed</td>
+                {% else %}
+                    <td id="invis">Not inscribed</td>
+                {% endif %}
+                <td id="invis">{{ sortie.organizer.name }} {{ sortie.organizer.secondName }} </td>
+
                 <td>Actions</td>
             </tr>
         {% endfor %}
     </table>
-    <a href="{{ path('main_filter') }}"><button>Créer une sortie</button></a>
+    <a href="{{ path('main_home') }}">
+        <button id="new-sortie">Créer une sortie</button>
+    </a>
 
 {% endblock %}
+    {% block scripts %}
+        <script src="{{ asset('scripts/home-page.js') }}"></script>
+    {% endblock %}
