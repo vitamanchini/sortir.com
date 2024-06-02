@@ -32,16 +32,17 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[ORM\Column(length: 50)]
-    private ?string $name = "First name";
+    private ?string $name = null;
 
     #[ORM\Column(length: 50)]
-    private ?string $secondName = "Second name";
+    private ?string $secondName = null;
 
     #[ORM\Column(length: 15, nullable: true)]
     private ?string $telephone = null;
 
     #[ORM\Column]
-    private ?bool $active = true;
+    private ?bool $active = null;
+
 
     #[ORM\Column(length: 30)]
     private ?string $pseudo = null;
@@ -95,6 +96,8 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @see UserInterface
+     *
+     * @return list<string>
      */
     public function getRoles(): array
     {
@@ -105,6 +108,9 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
         return array_unique($roles);
     }
 
+    /**
+     * @param list<string> $roles
+     */
     public function setRoles(array $roles): static
     {
         $this->roles = $roles;

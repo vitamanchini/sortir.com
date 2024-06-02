@@ -47,14 +47,14 @@ class City
         return $this;
     }
 
-    public function getPostalCode(): ?int
+    public function getPostCode(): ?string
     {
-        return $this->postalCode;
+        return $this->postCode;
     }
 
-    public function setPostalCode(int $postalCode): static
+    public function setPostCode(string $postCode): static
     {
-        $this->postalCode = $postalCode;
+        $this->postCode = $postCode;
 
         return $this;
     }
