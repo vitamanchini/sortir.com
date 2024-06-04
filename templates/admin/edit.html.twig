@@ -2,11 +2,18 @@
 
 {% block title %}Edit Participant{% endblock %}
 
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/admin/create-user.css') }}">
+{% endblock %}
+
+
 {% block body %}
     <h1>Edit Participant</h1>
 
-    {{ include('admin/_form.html.twig', {'button_label': 'Update'}) }}
-
+<section id="user-form">
+    <img id="profileImage" src="{{ asset('assets/' ~ user.profileImage) }}" alt="">
+    {{ include('inc/user-data-form.html.twig', {'button_label': 'Sauvegarder les modifications'}) }}
+</section>
     <a href="{{ path('app_admin_index') }}">back to list</a>
 
     {{ include('admin/_delete_form.html.twig') }}

@@ -9,11 +9,15 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Security;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 class ProfileController extends AbstractController
 {
     #[Route('/profile', name: 'app_profile')]
-    public function profile(Request $request, EntityManagerInterface $em, Security $security): Response
+    public function profile(Request $request,
+                            SluggerInterface $slugger,
+                            EntityManagerInterface $em,
+                            Security $security): Response
     {
 
         $user = $security->getUser();
@@ -25,6 +29,18 @@ class ProfileController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+
+            if($form['profileImage']) {
+                $file = $form['profileImage']->getData();
+                $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+                $safeFilename = $slugger->slug($originalFilename);
+                $someNewFilename = $safeFilename . '-' . uniqid() . '.' . $file->guessExtension();
+
+                $file->move($this->getParameter('user_avatar_directory'), $someNewFilename);
+
+                $user->setProfileImage($someNewFilename);
+            }
+
             $em->persist($user);
             $em->flush();
 
@@ -35,6 +51,7 @@ class ProfileController extends AbstractController
 
         return $this->render('profile/profile.html.twig', [
             'form' => $form->createView(),
+            'user' => $user
         ]);
     }
 }

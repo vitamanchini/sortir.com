@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/admin/create-user.css') }}">
+{% endblock %}
+
+{% block title %}Créer nouveau profil{% endblock %}
+{% block main %}
+    <h2 id="user-profile-title">Créer nouveaux profils</h2>
+
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+    <button type="submit" class="btn btn-success">Télécharger</button>
+    {{ form_end(form) }}
+
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">
+            {{ message }}
+        </div>
+    {% endfor %}
+
+    {% for message in app.flashes('error') %}
+        <div class="alert alert-danger">
+            {{ message }}
+        </div>
+    {% endfor %}
+    {#    <section id="user-form"> #}
+    {#        <img id="profileImageNew" src="" alt=""> #}
+    {#        {{ include('inc/user-data-form.html.twig', [{'button_label': 'Créer nouveau profil'},{'button_label': ''}]) }} #}
+    {#    </section> #}
+    <a href="{{ path('admin_page') }}">back to list</a>
+{% endblock %}
+    {% block scripts %}
+        {#        <script src="{{ asset('scripts/home-page.js') }}"></script> #}
+    {% endblock %}

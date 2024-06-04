@@ -1,16 +1,18 @@
 {% extends 'base.html.twig' %}
 
 {% block stylesheets %}
-    <link rel="stylesheet" href="{{ asset('css/home-page.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/admin/create-user.css') }}">
 {% endblock %}
 
-{% block title %}Accueil{% endblock %}
+{% block title %}Créer nouveau profil{% endblock %}
 {% block main %}
-    <h1>Create new Participant</h1>
+    <h2 id="user-profile-title">Créer nouveau profil</h2>
 
-    {{ include('admin/_form.html.twig') }}
-
-    <a href="{{ path('app_admin_page') }}">back to list</a>
+<section id="user-form">
+    <img id="profileImageNew" src="" alt="">
+    {{ include('inc/user-data-form.html.twig', [{'button_label': 'Créer nouveau profil'},{'button_label': ''}]) }}
+</section>
+    <a href="{{ path('admin_page') }}">back to list</a>
 {% endblock %}
     {% block scripts %}
 {#        <script src="{{ asset('scripts/home-page.js') }}"></script>#}

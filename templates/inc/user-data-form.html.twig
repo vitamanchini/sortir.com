@@ -1,0 +1,18 @@
+{{ form_start(form) }}
+    {{ form_row(form.secondName) }}
+    {{ form_row(form.name) }}
+    {{ form_row(form.pseudo) }}
+    {{ form_row(form.email) }}
+    {{ form_row(form.password) }}
+    {{ form_row(form.telephone) }}
+    {{ form_row(form.site) }}
+    {{ form_row(form.profileImage) }}
+    {% if is_granted('ROLE_ADMIN') %}
+        {{ form_row(form.roles) }}
+        {{ form_row(form.active) }}
+    {% endif %}
+<button class="btn btn-success">{{ button_label|default('Sauvegarder les modifications') }}</button>
+<button type="reset" class="btn btn-danger">{{ button_label|default('Annuler') }}</button>
+{{ form_end(form) }}
+
+
