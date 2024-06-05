@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\SearchData;
 use App\Entity\Sortie;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -59,62 +60,59 @@ class SortieRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
-
 //    /**
-//     * @return Sortie[]
+//     * @return Sortie[] Returns an array of Sortie objects
 //     */
     public function findSearch(SearchData $search): array
     {
-//        $query = $this->createQueryBuilder('s')
-//            ->select('c', 's')
-//            ->join('p.categories', 'c');
-//
-////        if (!empty($search->sites)) {
-////            $query = $query
-////                ->andWhere('c.id IN (:categories)')
-////                ->setParameter('categories', $search->categories);
-////        }
-//        if (!empty($search->search)) {
-//            $query = $query
-//                ->andWhere('s.name LIKE :search');
-////                ->setParameter('search', "%{$search->search}%");
-//        }
-//
-//        if (!empty($search->dateStart)) {
-//            $query = $query
-//                ->andWhere('s.dateHourStart >= :dateStart');
-////                ->setParameter('min', $search->min);
-//        }
-//
-//        if (!empty($search->dateEnd)) {
-//            $query = $query
-//                ->andWhere('s.dateHourStart + s.duration*3600 <= :dateEnd');
-////                ->setParameter('max', $search->max);
-//        }
-//
-////        if (!empty($search->promo)) {
-////            $query = $query
-////                ->andWhere('p.promo = 1');
-////        }
-////        if (!empty($search->promo)) {
-////            $query = $query
-////                ->andWhere('p.promo = 1');
-////        }
-////        if (!empty($search->promo)) {
-////            $query = $query
-////                ->andWhere('p.promo = 1');
-////        }
-//        if (!empty($search->finishedEvents)) {
-//            $query = $query
-//                ->andWhere('s.state = 5');
-//        }
-//
-//
-////        return $this->paginator->paginate(
-////            $query,
-////            $search->page,
-////            9
-////        );
-        return $this->findAll();
+        $qu = $this->createQueryBuilder('s')
+            ->select('p','s', )
+            ->leftJoin('s.participants', 'p', Join::ON);
+
+        if ($search->getSite()) {
+            $qu
+                ->where('s.site = :site')
+                ->setParameter('site', $search->getSite());
+        }
+        if ($search->getSearch()) {
+            $qu
+                ->having('s.name LIKE :search')
+                ->setParameter('search', "%{$search->getSearch()}%");
+        }
+        if ($search->getDateStart()) {
+            $qu
+                ->andHaving('s.dateHourStart >= :dateStart')
+                ->setParameter('dateStart', $search->getDateStart());
+        }
+        if ($search->getDateEnd()) {
+            $qu
+                ->andHaving('s.dateHourStart <= :dateEnd')
+                ->setParameter('dateEnd', $search->getDateEnd());
+        }
+        if ($search->isChoiseMeOrganisator()) {
+            $qu
+                ->andHaving('s.organizer = :meorg')
+                ->setParameter('meorg', $search->getUserId());
+        }
+        if ($search->isChoiseMeInscribed()) {
+            $qu
+                ->andHaving(':meins MEMBER OF s.participants')
+                ->setParameter('meins', $search->getUserId());
+        }
+        if ($search->isChoiseMeNotInscribed()) {
+            $qu
+                ->andHaving('NOT :menotins MEMBER OF s.participants')
+                ->setParameter('menotins', $search->getUserId());
+        }
+        if ($search->isFinishedEvents()) {
+            $qu
+                ->andHaving('s.status = 5');
+        }
+
+
+        $query = $qu->getQuery()->execute();
+dump($qu->getQuery() );
+        return $query;
+
     }
 }

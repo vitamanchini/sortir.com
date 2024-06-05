@@ -1,16 +1,50 @@
 
-#profile-info{
-    display: flex;
-}
-table{
-    margin-left: 50px;
-    height: 300px;
-    /*font-size: 20px;*/
-}
-tr{
-    margin-top: 10px;
-}
-td{
-    width: 200px;
+@media screen and (min-width: 1350px) {
+    #profileImage{
+        width: 400px;
+        border-radius: 50%;
+        border: #04AA6D solid 4px;
+    }
+    #profile-info {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+    }
 
+    table {
+        margin-left: 50px;
+    }
+
+    td {
+        padding: 10px;
+        width: auto;
+
+    }
+
+}
+
+@media screen and (max-width: 500px) {
+    #profileImage{
+        width: 70vw;
+        border-radius: 50%;
+        border: #04AA6D solid 4px;
+    }
+    #profile-info {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    table {
+        margin-left: 10px;
+
+    }
+
+    td {
+        padding: 10px;
+        width: auto;
+
+    }
 }

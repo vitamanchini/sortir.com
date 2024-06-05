@@ -1,13 +1,39 @@
-.form-control{
-    width: 100%;
+
+@media screen and (min-width: 1350px) {
+    .form-control {
+        width: 100%;
+    }
+
+    form {
+        margin-top: 0 !important;
+        margin: auto;
+        border: darkgreen solid 1px;
+        border-radius: 20px;
+        padding: 20px;
+        width: 500px;
+    }
+
+    input {
+        margin-bottom: 20px;
+    }
 }
-form{
-    margin: auto;
-    border: darkgreen solid 1px;
-    border-radius: 20px;
-    padding: 20px;
-    width: 500px;
-}
-input{
-    margin-bottom: 20px;
+
+
+@media screen and (max-width: 500px) {
+    .form-control {
+        width: 70vw;
+    }
+
+    form {
+        margin-top: 0 !important;
+        margin: auto;
+        border: darkgreen solid 1px;
+        border-radius: 20px;
+        padding: 20px;
+        width: auto;
+    }
+
+    input {
+        margin-bottom: 20px;
+    }
 }

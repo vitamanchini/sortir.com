@@ -257,5 +257,8 @@
     },
     "twig/extra-bundle": {
         "version": "v3.8.0"
+    },
+    "warslett/table-builder-bundle": {
+        "version": "0.3.0"
     }
 }

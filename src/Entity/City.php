@@ -32,7 +32,7 @@ class City
         $this->postalCode = $postalCode;
     }
 
-    #[ORM\OneToMany(targetEntity: Place::class, mappedBy: 'relation')]
+    #[ORM\OneToMany(targetEntity: Place::class, mappedBy: 'city')]
     private Collection $places;
 
     public function __construct()

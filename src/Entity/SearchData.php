@@ -17,10 +17,10 @@ class SearchData
     private ?int $id = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    public ?\DateTimeInterface $dateStart = null;
+    private ?\DateTimeInterface $dateStart = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    public ?\DateTimeInterface $dateEnd = null;
+    private ?\DateTimeInterface $dateEnd = null;
 
     #[ORM\Column(nullable: true)]
     private ?bool $choiseMeOrganisator = null;
@@ -32,18 +32,22 @@ class SearchData
     private ?bool $choiseMeNotInscribed = null;
 
     #[ORM\Column(nullable: true)]
-    public ?bool $finishedEvents = null;
+    private ?bool $finishedEvents = null;
 
     #[ORM\Column(length: 50, nullable: true)]
-    public ?string $search = null;
+    private ?string $search = null;
 
-    #[ORM\ManyToMany(targetEntity: Site::class)]
-    private Collection $sites;
+    #[ORM\ManyToOne(targetEntity: Site::class)]
+    private ?Site $site = null;
 
-    public function __construct()
-    {
-        $this->sites = new ArrayCollection();
-    }
+    #[ORM\Column(nullable: true)]
+    private ?int $userId = null;
+
+
+//    public function __construct()
+//    {
+//        $this->sites = new Site();
+//    }
 
     public function getId(): ?int
     {
@@ -136,27 +140,30 @@ class SearchData
         return $this;
     }
 
-    /**
-     * @return Collection<int, Site>
-     */
-    public function getSites(): Collection
+//    /**
+//     * @return Collection<int, Site>
+//     */
+    public function getSite(): ?Site
     {
-        return $this->sites;
+        return $this->site;
     }
-
-    public function addSite(Site $site): static
+    public function setSite(?Site $site): static
     {
-        if (!$this->sites->contains($site)) {
-            $this->sites->add($site);
-        }
+        $this->site = $site;
 
         return $this;
     }
 
-    public function removeSite(Site $site): static
+    public function getUserId(): ?int
     {
-        $this->sites->removeElement($site);
+        return $this->userId;
+    }
+
+    public function setUserId(?int $userId): static
+    {
+        $this->userId = $userId;
 
         return $this;
     }
+
 }

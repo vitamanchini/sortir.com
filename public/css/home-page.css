@@ -1,16 +1,258 @@
+@media screen and (min-width: 1350px) {
+    #user-date-field {
+        display: flex;
+        justify-content: flex-end;
+    }
 
-#user-date-field{
-    display: flex;
-    justify-content: flex-end;
+    #filter-section {
+        display: flex;
+        flex-direction: row;
+        margin-bottom: 50px;
+        margin-left: 0px;
+    }
+    #filterslogo {
+        display: none;
+        margin-left: 20px;
+        height: 25px;
+    }
+
+    #filters-first-col {
+        display: flex;
+        flex-direction: column;
+        margin-right: 50px;
+
+        #dates-filter {
+            display: flex;
+            flex-direction: row;
+
+            label {
+                width: auto;
+                margin-right: 20px;
+            }
+
+            input {
+                margin-right: 20px;
+            }
+        }
+
+        div {
+            margin-bottom: 10px;
+        }
+
+        label {
+            width: 230px;
+        }
+    }
+
+    #filters-second-col {
+        display: flex;
+        flex-direction: column;
+        margin-right: 50px;
+
+        div {
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: flex-end;
+            margin-bottom: 10px;
+
+            input {
+                margin-right: 15px;
+            }
+        }
+    }
+
+    #filters-third-col {
+        display: flex;
+        flex-direction: column;
+        margin-right: 50px;
+
+        div {
+            margin-bottom: 10px;
+        }
+    }
+
+    #search {
+        width: 200px;
+        height: 80px;
+        background-color: darkgreen;
+        color: white;
+        border-radius: 25px;
+        font-size: 1.5rem;
+    }
+
+    #search:hover {
+        background-color: #04AA6D;
+    }
+
+    #sorties-table td, #customers th {
+        border: 1px solid #ddd;
+        padding: 8px;
+    }
+
+    #sorties-table tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    #sorties-table tr:hover {
+        background-color: #ddd;
+    }
+
+    #sorties-table th {
+        padding-top: 12px;
+        padding-bottom: 12px;
+        text-align: left;
+        background-color: #04AA6D;
+        color: white;
+    }
+
+    #new-sortie {
+        margin-top: 30px;
+        padding: 12px;
+        background-color: darkgreen;
+        color: white;
+        border-radius: 20px;
+        font-size: 1.4rem;
+        margin-left: 0;
+        display: block;
+    }
+
+    #new-sortie:hover {
+        background-color: #04AA6D;
+    }
+
+    button {
+        border: 0;
+    }
 }
-.filter-section{
-    display: flex;
-}
-.filters{
-    display: flex;
-    flex-direction: column;
-    margin-right: 50px;
-}
-table{
-    height: 400px;
+
+@media screen and (max-width: 500px) {
+    #user-date-field {
+        display: flex;
+        justify-content: center;
+    }
+
+    #filtering {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        font-weight: 700;
+    }
+
+    #filter-section {
+        display: none;
+        flex-direction: column;
+        margin-bottom: 50px;
+        margin-left: 10px;
+    }
+
+    #filterslogo {
+        display: inline;
+        margin-left: 20px;
+        height: 25px;
+    }
+
+    #filters-first-col {
+        display: flex;
+        flex-direction: column;
+        margin-right: 50px;
+
+        #dates-filter {
+            display: flex;
+            flex-direction: row;
+
+            label {
+                width: auto;
+                margin-right: 20px;
+            }
+
+            input {
+                margin-right: 20px;
+            }
+        }
+
+        div {
+            margin-bottom: 10px;
+        }
+
+        label {
+            width: 230px;
+        }
+    }
+
+    #filters-second-col {
+        display: flex;
+        flex-direction: column;
+        margin-right: 50px;
+
+        div {
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: flex-end;
+            margin-bottom: 10px;
+
+            input {
+                margin-right: 15px;
+            }
+        }
+    }
+
+    #filters-third-col {
+        display: flex;
+        flex-direction: column;
+        margin-right: 50px;
+
+        div {
+            margin-bottom: 10px;
+        }
+    }
+
+    #search {
+        width: 120px;
+        height: 60px;
+        background-color: darkgreen;
+        color: white;
+        border-radius: 10px;
+        font-size: 1.2rem;
+    }
+
+    #search:hover {
+        background-color: #04AA6D;
+    }
+
+    #sorties-table td, #customers th {
+        border: 1px solid #ddd;
+        padding: 8px;
+    }
+
+    #sorties-table tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    #sorties-table tr:hover {
+        background-color: #ddd;
+    }
+
+    #sorties-table th {
+        padding-top: 12px;
+        padding-bottom: 12px;
+        text-align: left;
+        background-color: #04AA6D;
+        color: white;
+    }
+
+    #new-sortie {
+display: none;
+    }
+
+    #new-sortie:hover {
+        background-color: #04AA6D;
+    }
+
+    button {
+        border: 0;
+    }
+
+    #invis {
+        display: none;
+    }
 }

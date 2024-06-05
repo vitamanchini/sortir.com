@@ -42,6 +42,8 @@ class ParticipantRepository extends ServiceEntityRepository implements PasswordU
         $this->getEntityManager()->flush();
     }
 
+
+
 //    /**
 //     * @return Participant[] Returns an array of Participant objects
 //     */
