@@ -15,7 +15,7 @@
             </li>
         {% endif %}
 
-        {% if is_granted('ROLE_ADMIN', 'ROLE_USER')%}
+        {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_USER') %}
             <li><a class="navigation-links" href="{{ path('main_home') }}">Accueil</a></li>
         <li><a class="navigation-links" href="{{ path('app_participant', {id: app.user.id}) }}">Mon profil</a></li>
             <li><a class="navigation-links" href="{{ path('app_profile') }}">Mon profil a</a></li>

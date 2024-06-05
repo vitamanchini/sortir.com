@@ -31,7 +31,11 @@
                 </tr>
                 <tr>
                     <td>Ville de rattachement:</td>
-                    <td>{{ user.site.name }}</td>
+                    {% if user.site is null %}
+                    <td>-</td>
+                        {% else %}
+                        <td> {{ user.site.name }} </td>
+                    {% endif %}
                 </tr>
             </table>
         </div>

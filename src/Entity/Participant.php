@@ -32,16 +32,16 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[ORM\Column(length: 50)]
-    private ?string $name = null;
+    private ?string $name = "null";
 
     #[ORM\Column(length: 50)]
-    private ?string $secondName = null;
+    private ?string $secondName = "null";
 
     #[ORM\Column(length: 15, nullable: true)]
     private ?string $telephone = null;
 
     #[ORM\Column]
-    private ?bool $active = null;
+    private ?bool $active = true;
 
 
     #[ORM\Column(length: 30)]
@@ -61,9 +61,11 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function __construct()
     {
+
         $this->organisedSorties = new ArrayCollection();
         $this->sorties = new ArrayCollection();
     }
+
 
 
 

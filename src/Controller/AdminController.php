@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Command\CreateUsersFromCsvCommand;
+
 use App\Entity\Participant;
 use App\Form\CsvImportForm;
 use App\Form\ParticipantType;
@@ -38,7 +38,7 @@ class AdminController extends AbstractController
             $entityManager->persist($participant);
             $entityManager->flush();
 
-            return $this->redirectToRoute('admin/index.html.twig');
+            return $this->redirectToRoute('admin_page');
         }
 
         return $this->render('admin/create-user.html.twig', [
@@ -62,7 +62,7 @@ class AdminController extends AbstractController
 
         return $this->renderForm('admin/edit.html.twig', [
             'participant' => $participant,
-            'form' => $form,
+            'form' => $form, //todo create form/view to edit
         ]);
     }
 
