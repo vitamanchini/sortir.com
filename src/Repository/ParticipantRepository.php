@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Participant;
+use App\Entity\Sortie;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bridge\Doctrine\Security\User\UserLoaderInterface;
@@ -77,5 +78,19 @@ class ParticipantRepository extends ServiceEntityRepository implements PasswordU
         )
             ->setParameter('query', $identifier)
             ->getOneOrNullResult();
+    }
+
+    public function contains(Participant $participant, Sortie $sortie): bool
+    {
+        $qb = $this->createQueryBuilder('p')
+            ->innerJoin('p.sorties', 's')
+            ->where('p.id = :participantId')
+            ->andWhere('s.id = :sortieId')
+            ->setParameter('participantId', $participant->getId())
+            ->setParameter('sortieId', $sortie->getId());
+
+        $query = $qb->getQuery();
+
+        return count($query->getResult()) > 0;
     }
 }

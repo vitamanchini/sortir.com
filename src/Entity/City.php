@@ -19,8 +19,18 @@ class City
     #[ORM\Column(length: 30)]
     private ?string $name = null;
 
-    #[ORM\Column(type: Types::SMALLINT)]
-    private ?int $postalCode = null;
+    #[ORM\Column(length:5)]
+    private ?string $postalCode = null;
+
+    public function getPostalCode(): ?string
+    {
+        return $this->postalCode;
+    }
+
+    public function setPostalCode(?string $postalCode): void
+    {
+        $this->postalCode = $postalCode;
+    }
 
     #[ORM\OneToMany(targetEntity: Place::class, mappedBy: 'relation')]
     private Collection $places;
@@ -28,6 +38,11 @@ class City
     public function __construct()
     {
         $this->places = new ArrayCollection();
+    }
+
+    public function __toString()
+    {
+        return sprintf('%s (%s)', $this->getName(), $this->getPostalCode());
     }
 
     public function getId(): ?int
@@ -47,17 +62,7 @@ class City
         return $this;
     }
 
-    public function getPostCode(): ?string
-    {
-        return $this->postCode;
-    }
 
-    public function setPostCode(string $postCode): static
-    {
-        $this->postCode = $postCode;
-
-        return $this;
-    }
 
     /**
      * @return Collection<int, Place>

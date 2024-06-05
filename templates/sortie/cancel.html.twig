@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Annuler une sortie
+{% endblock %}
+
+{% block main %}
+    {{ form_start(form) }}
+    {{ form_row(form.name) }}
+    {{ form_row(form.dateHourStart) }}
+    {{ form_row(form.site) }}
+    {{ form_row(form.place) }}
+    {{ form_row(form.motif) }}
+    {{ form_widget(form) }}
+    <button class="btn btn-primary">Annuler la sortie</button>
+    {{ form_end(form) }}
+    <a href="{{ path('main_home')}}">Retour</a>
+{% endblock %}
+

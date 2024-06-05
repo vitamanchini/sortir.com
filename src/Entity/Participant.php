@@ -65,7 +65,14 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
         $this->sorties = new ArrayCollection();
     }
 
+    public function __toString()
+    {
+        $siteString = $this->getSite() ? sprintf(' - %s', $this->getSite()) : '';
+        $organisedSortiesString = $this->getOrganisedSorties()->count() ? sprintf(' - %d sorties organisées', $this->getOrganisedSorties()->count()) : '';
+        $sortiesString = $this->getSorties()->count() ? sprintf(' - %d sorties inscrites', $this->getSorties()->count()) : '';
 
+        return sprintf('%s %s (%s) - %s%s%s', $this->getName(), $this->getSecondName(), $this->getEmail(), $siteString, $organisedSortiesString, $sortiesString);
+    }
 
     public function getId(): ?int
     {

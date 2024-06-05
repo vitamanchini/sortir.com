@@ -22,13 +22,15 @@ class SortieRepository extends ServiceEntityRepository
         parent::__construct($registry, Sortie::class);
     }
 
-    public function findVisibleSorties(\DateTime $oneMonthAgo, $user): array
+    public function findVisibleSorties(\DateTime $oneMonthAgo): array
     {
-        $qb = $this->createQueryBuilder('s')
-            ->where('s.dateHourStart >= :oneMonthAgo OR s.organizer = :user OR :isAdmin = true')
-            ->setParameter('oneMonthAgo', $oneMonthAgo)
-            ->setParameter('user', $user)
-            ->setParameter('isAdmin', in_array('ROLE_ADMIN', $user->getRoles()));
+        $dateLimit = $oneMonthAgo;
+        $qb = $this->createQueryBuilder('s');
+
+        // Filtrer les sorties d'il y a 1 mois
+        $qb->andWhere($qb->expr()->gte('s.dateHeureDebut', ':dateLimit'))
+            ->setParameter('dateLimit', $oneMonthAgo);
+
 
         return $qb->getQuery()->getResult();
     }

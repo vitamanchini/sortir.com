@@ -30,6 +30,14 @@ class Site
         $this->sortie = new ArrayCollection();
     }
 
+    public function __toString()
+    {
+        $participantString = $this->getParticipant() ? sprintf('%s ', $this->getParticipant()) : '';
+        $sortieString = $this->getSortie() ? sprintf('- %s ', $this->getSortie()) : '';
+
+        return sprintf('%s%s%s', $participantString, $sortieString, $this->getName());
+    }
+
     public function getId(): ?int
     {
         return $this->id;

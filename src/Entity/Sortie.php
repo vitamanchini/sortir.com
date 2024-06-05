@@ -2,16 +2,29 @@
 
 namespace App\Entity;
 
+use App\EventListener\SortieCancelListener;
+use App\EventListener\SortieEditListener;
 use App\EventListener\SortieListener;
+use App\EventListener\SortiePublishListener;
+use App\EventListener\SortieRegisterListener;
 use App\Repository\SortieRepository;
+use DateTime;
+use Doctrine\Common\Annotations\Annotation\IgnoreAnnotation;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 #[ORM\Entity(repositoryClass: SortieRepository::class)]
-#[ORM\EntityListeners([SortieListener::class])]
+
+/** @ORM\EntityListeners({
+ *     SortieListener::class,
+ *     SortieEditListener::class,
+* })
+ * @IgnoreAnnotation("ORM\EntityListeners")
+*/
 class Sortie
 {
     #[ORM\Id]
@@ -37,13 +50,16 @@ class Sortie
     #[ORM\Column(length: 400, nullable: true)]
     private ?string $info = null;
 
-    #[ORM\ManyToOne(inversedBy: 'sortie')]
+    #[ORM\Column(length: 100, nullable: true)]
+    private ?string $motif = null;
+
+    #[ORM\ManyToOne(targetEntity: Place::class, inversedBy: 'sortie')]
+    #[ORM\JoinColumn(nullable: false)]
     private ?Place $place = null;
 
     #[ORM\ManyToOne(inversedBy: 'sortie')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Site $site = null;
-
 
     #[ORM\ManyToOne(inversedBy: 'sorties')]
     #[ORM\JoinColumn(nullable: false)]
@@ -55,9 +71,67 @@ class Sortie
     #[ORM\ManyToMany(targetEntity: Participant::class, mappedBy: 'sorties')]
     private Collection $participants;
 
+    #[ORM\ManyToOne(targetEntity: Sortie::class, inversedBy: 'sorties')]
+    #[ORM\JoinColumn(name:"city_id", referencedColumnName:"id",nullable: true)]
+    private City $city;
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private DateTime $updatedAt;
+
+    public function getUpdatedAt(): DateTime
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(DateTime $updatedAt): void
+    {
+        $this->updatedAt = new DateTime;
+    }
+
+    public function getCity(): City
+    {
+        return $this->city;
+    }
+
+    public function setCity(City $city): void
+    {
+        $this->city = $city;
+    }
+
+
+
+    private $canShowDetailClosure;
+
+    /**
+     * @return mixed
+     */
+    public function getCanShowDetailClosure()
+    {
+        return $this->canShowDetailClosure;
+    }
+
+
     public function __construct()
     {
         $this->participants = new ArrayCollection();
+        $this->updatedAt = new DateTime();
+    }
+
+    public function __toString()
+    {
+        return sprintf(
+            "%s, %s, %dh, %s, %d places, %s, %s, %s, %s, %s, %s",
+            $this->getName(),
+            $this->getDateHourStart()->format('Y-m-d H:i'),
+            $this->getDuration(),
+            $this->getDateLimitInscription()->format('Y-m-d H:i'),
+            $this->getMaxInscriptions(),
+            $this->getInfo(),
+            $this->getPlace(),
+            $this->getCity(),
+            $this->getSite(),
+            $this->getStatus(),
+            $this->getOrganizer()
+        );
     }
 
 
@@ -195,6 +269,7 @@ class Sortie
         return $this->participants;
     }
 
+
     public function addParticipant(Participant $participant): static
     {
         if (!$this->participants->contains($participant)) {
@@ -214,37 +289,32 @@ class Sortie
         return $this;
     }
 
-    public function canShowDetail(?Participant $user): bool
+    public function getMotif(): ?string
     {
-        // Vérifier si l'organisateur est différent de l'utilisateur actuel
-        if ($this->organizer === $user) {
-            return false;
-        }
-
-        // Vérifier si le statut est "en cours" ou "ouvert"
-        $allowedStatuses = [2, 4];
-        if (!in_array($this->status->getLabel(), $allowedStatuses, true)) {
-            return false;
-        }
-
-        return true;
+        return $this->motif;
     }
 
-    public function canUnregister(?Participant $user): bool
+    public function setMotif(?string $motif): void
     {
-        // Vérifier si l'utilisateur est inscrit à la sortie
-        if (!$this->participants->contains($user)) {
-            return false;
-        }
-
-        // Vérifier si le statut permet le désistement (par exemple, "ouvert" ou "en cours")
-        $allowedStatuses = [2, 4];
-        if (!in_array($this->status->getLabel(), $allowedStatuses, true)) {
-            return false;
-        }
-
-        return true;
+        $this->motif = $motif;
     }
+
+    public function setCanShowDetailClosure(\Closure $canShowDetailClosure): void
+    {
+        $this->canShowDetailClosure = $canShowDetailClosure;
+    }
+
+    public function isUserInscrit(UserInterface $user): bool
+    {
+        foreach ($this->participants as $participant) {
+            if ($participant->getUser() === $user) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
 
 
 }

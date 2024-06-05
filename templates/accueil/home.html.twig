@@ -65,7 +65,6 @@
 {#        </section>#}
     </div>
 
-
     <table>
         <tr>
             <td>Nom de la sortie</td>
@@ -82,33 +81,34 @@
 {#            {% if sortie.dateHourStart > oneMonthAgo or is_granted('ROLE_ADMIN') or sortie.organizer == app.user %}#}
                 <tr>
                     <td>{{ sortie.name }}</td>
-                    <td>{{ sortie.dateHourStart }}</td>
-                    <td>{{ sortie.dateLimitInscription }}</td>
-                    <td>{{ sortie.dateHourStart + sortie.duration*60*60 }}</td>
-                    <td>{{ sortie.status }}</td>
-                    <td>{{ sortie.dateHourStart }}</td>
-                    <td>{{ sortie.site }}</td>
-                    <td>{% if can_show_detail %}
-                            <a href="{{ path('sortie_detail', {'id': sortie.id}) }}">Détails</a>
+                    <td>{{ sortie.dateHourStart|date('d-m-Y H:i') }}</td>
+                    <td>{{ sortie.dateLimitInscription|date('d-m-Y H:i') }}</td>
+{#                    <td>{{ sortie.dateHourStart + sortie.duration*60*60}}</td>#}
+                    <td>{{ sortie.status.label }}</td>
+                    <td>{{ sortie.dateHourStart|date('d-m-Y H:i') }}</td>
+                    <td>{{ sortie.site.name }}</td>
+                    <td>
+                        {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                            <a href="{{ path('sortie_show', {'id': sortie.id}) }}">Détails</a>
                         {% endif %}
-                        {% if can_unregister %}
+                        {% if sortie.status.id is same as 'Ouverte' and (sortie.organizer is not same as app.user or is_granted('ROLE_ADMIN') and sortie.participants.contains(app.user)) %}
                             <a href="{{ path('sortie_unregister', {'id': sortie.id}) }}">Se désister</a>
                         {% endif %}
-                        {% if can_edit %}
+                        {% if (sortie.status.id is same as 1 or sortie.status.id is same as 2) and (sortie.organizer is same as app.user or is_granted('ROLE_ADMIN')) %}
                             <a href="{{ path('sortie_edit', {'id': sortie.id}) }}">Modifier</a>
                         {% endif %}
-                        {% if can_publish %}
+                        {% if sortie.status.id is same as 1 and (sortie.organizer is same as app.user or is_granted('ROLE_ADMIN')) %}
                             <a href="{{ path('sortie_publish', {'id': sortie.id}) }}">Publier</a>
                         {% endif %}
-                        {% if can_register %}
+                        {% if sortie.status.id is same as 2 and (sortie.organizer is not same as app.user or is_granted('ROLE_ADMIN') and not sortie.participants.contains(app.user)) %}
                             <a href="{{ path('sortie_register', {'id': sortie.id}) }}">S'inscrire</a>
                         {% endif %}
-                        {% if can_cancel %}
+                        {% if sortie.status.id is not same as 4 and sortie.status.id is not same as 5 and sortie.organizer is same as app.user or is_granted('ROLE_ADMIN') %}
                             <a href="{{ path('sortie_cancel', {'id': sortie.id}) }}">Annuler</a>
                         {% endif %}
+
                     </td>
                 </tr>
-{#            {% endif %}#}
         {% endfor %}
     </table>
     <a href="{{ path('main_filter') }}"><button>Créer une sortie</button></a>
