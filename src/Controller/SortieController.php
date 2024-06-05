@@ -4,16 +4,32 @@ namespace App\Controller;
 
 use App\Entity\Participant;
 use App\Entity\Sortie;
+use App\Entity\Status;
+use App\EventListener\SortieCancelListener;
 use App\Form\SortieType;
+use App\Repository\SortieRepository;
+use App\Service\SortieAnnulationService;
+use App\Service\SortieDesisterService;
+use App\Service\SortieInscriptionService;
+use App\Service\SortieModifierService;
+use App\Service\SortiePublierService;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\Event\LifecycleEventArgs;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 class SortieController extends AbstractController
 {
+    private $sortieRepository;
+
+    public function __construct(SortieRepository $sortieRepository)
+    {
+        $this->sortieRepository = $sortieRepository;
+    }
     #[Route('/sortie/{id}', name: 'sortie_show')]
     public function show(int $id, EntityManagerInterface $entityManager): Response
     {
@@ -22,150 +38,70 @@ class SortieController extends AbstractController
         if (!$sortie) {
             throw $this->createNotFoundException('La sortie n\'existe pas');
         }
-
         $user = $this->getUser();
-
+        $canShowDetail = $sortie->getCanShowDetailClosure()($user);
         return $this->render('sortie/detail.html.twig', [
             'sortie' => $sortie,
-            'can_show_detail' => $sortie->canShowDetail($user),
-            'can_unregister' => $sortie->canUnregister($user)
+            'canShowDetail' => $canShowDetail,
         ]);
-    }
-    #[Route('/sortie/{id}/sortie_detail', name: 'sortie_detail')]
-    public function detail(int $id, EntityManagerInterface $entityManager): Response
-    {
-        $sortie = $entityManager->getRepository(Sortie::class)->find($id);
-
-        if (!$sortie) {
-            throw $this->createNotFoundException('La sortie n\'existe pas');
-        }
-
-        return $this->render('sortie/detail.html.twig', [
-            'sortie' => $sortie
-        ]);
-    }
-    #[Route('/sortie/{id}/unregister', name: 'sortie_unregister')]
-    public function unregister(int $id, EntityManagerInterface $entityManager,#[CurrentUser] participant $user): \Symfony\Component\HttpFoundation\RedirectResponse
-    {
-        $sortie = $entityManager->getRepository(Sortie::class)->find($id);
-
-        if (!$sortie) {
-            throw $this->createNotFoundException('La sortie n\'existe pas');
-        }
-
-        if (!$sortie->canUnregister($user)) {
-            throw $this->createAccessDeniedException('Vous ne pouvez pas vous désister de cette sortie.');
-        }
-
-        $sortie->removeParticipant($user);
-        $entityManager->flush();
-
-        return $this->redirectToRoute('sortie_show', ['id' => $id]);
     }
 
     #[Route('/sortie/{id}/edit', name: 'sortie_edit')]
-    public function edit(int $id, Request $request, EntityManagerInterface $entityManager): Response
+    public function edit(Sortie $sortie, SortieModifierService $sortieModifierService): Response
     {
-        $sortie = $entityManager->getRepository(Sortie::class)->find($id);
-        $user = $this->getUser();
-
-        if (!$sortie) {
-            throw $this->createNotFoundException('La sortie n\'existe pas');
-        }
-
-        if ($sortie->getStatus()->getLabel() !== 1 || $sortie->getOrganizer() !== $user) {
-            throw $this->createAccessDeniedException('Vous ne pouvez pas modifier cette sortie.');
-        }
-
-        $form = $this->createForm(SortieType::class, $sortie);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
-
-            return $this->redirectToRoute('sortie_show', ['id' => $sortie->getId()]);
-        }
-
-        return $this->render('sortie/edit.html.twig', [
-            'sortie' => $sortie,
-            'form' => $form->createView()
-        ]);
+        dd($sortie);
+        return $sortieModifierService->edit($id, $request);
     }
 
     #[Route('/sortie/{id}/publish', name: 'sortie_publish')]
-    public function publish(int $id, EntityManagerInterface $entityManager): Response
+    public function publier(Sortie $sortie, Request $request, SortiePublierService $sortiePublisherService): Response
     {
-        $sortie = $entityManager->getRepository(Sortie::class)->find($id);
-        $user = $this->getUser();
+        $sortie->setUpdatedAt(new \DateTime());
 
-        if (!$sortie) {
-            throw $this->createNotFoundException('La sortie n\'existe pas');
-        }
+        $sortiePublisherService->publier($sortie);
 
-        if ($sortie->getStatus()->getLabel() !== 1 || $sortie->getOrganizer() !== $user) {
-            throw $this->createAccessDeniedException('Vous ne pouvez pas publier cette sortie.');
-        }
+        $this->addFlash('success', 'La sortie a été publiée avec succès.');
 
+        return $this->redirectToRoute('sortie_show', ['id' => $sortie->getId()]);
+    }
 
-        $sortie->getStatus()->setLabel(2);
+    #[Route('/sortie/{id}/cancel', name:'sortie_cancel')]
+    public function annuler(Sortie $sortie, Request $request, SortieAnnulationService $sortieAnnulationService): Response
+    {
+        $sortieAnnulationService->annuler($sortie);
 
-        $entityManager->flush();
-
-        return $this->redirectToRoute('sortie_show', ['id' => $id]);
+        return $this->redirectToRoute('sortie_show', ['id' => $sortie->getId()]);
     }
 
     #[Route('/sortie/{id}/register', name: 'sortie_register')]
-    public function register(int $id, EntityManagerInterface $entityManager,#[CurrentUser] participant $user): Response
+    public function inscription(Sortie $sortie, Request $request, SortieInscriptionService $sortieInscriptionService): Response
     {
-        $sortie = $entityManager->getRepository(Sortie::class)->find($id);
-        $currentDate = new \DateTime();
+        $sortie->setUpdatedAt(new \DateTime());
 
-        if (!$sortie) {
-            throw $this->createNotFoundException('La sortie n\'existe pas');
+        try {
+            $sortieInscriptionService->inscription($sortie);
+            $this->addFlash('success', 'Vous avez été inscrit à la sortie avec succès.');
+        } catch (AccessDeniedException $e) {
+            $this->addFlash('error', $e->getMessage());
         }
 
-        if ($sortie->getOrganizer() === $user || $sortie->getParticipants()->contains($user)) {
-            throw $this->createAccessDeniedException('Vous ne pouvez pas vous inscrire à cette sortie.');
-        }
-
-        // Vérifier si la date limite d'inscription est passée
-        if ($currentDate > $sortie->getDateLimitInscription()) {
-            throw $this->createAccessDeniedException('La date limite d\'inscription est dépassée pour cette sortie.');
-        }
-
-        // Vérifier si le nombre maximum d'inscriptions est atteint
-        if ($sortie->getParticipants()->count() >= $sortie->getMaxInscriptions()) {
-            throw $this->createAccessDeniedException('Le nombre maximum d\'inscriptions est atteint pour cette sortie.');
-        }
-
-        // Ajouter l'utilisateur à la liste des participants
-        $sortie->addParticipant($user);
-
-        $entityManager->flush();
-
-        return $this->redirectToRoute('sortie_show', ['id' => $id]);
+        return $this->redirectToRoute('sortie_show', ['id' => $sortie->getId()]);
     }
 
-    #[Route('/sortie/{id}/cancel', name: 'sortie_cancel')]
-    public function cancel(int $id, EntityManagerInterface $entityManager): Response
+    #[Route('/sortie/{id}/unregister', name: 'sortie_unregister')]
+    public function desister(Sortie $sortie, Request $request, SortieDesisterService $sortieDesisterService): Response
     {
-        $sortie = $entityManager->getRepository(Sortie::class)->find($id);
-        $user = $this->getUser();
+        $sortie->setUpdatedAt(new \DateTime());
 
-        if (!$sortie) {
-            throw $this->createNotFoundException('La sortie n\'existe pas');
+        try {
+            $sortieDesisterService->desister($sortie);
+            $this->addFlash('success', 'Vous avez été désinscrit de la sortie avec succès.');
+        } catch (AccessDeniedException $e) {
+            $this->addFlash('error', $e->getMessage());
         }
-
-        if ($sortie->getStatus()->getLabel() !== 2 || $sortie->getOrganizer() !== $user) {
-            throw $this->createAccessDeniedException('Vous ne pouvez pas annuler cette sortie.');
-        }
-
-        // Supprimer la sortie de la base de données
-        $entityManager->remove($sortie);
-        $entityManager->flush();
-
-        return $this->redirectToRoute('main_home');
+        return $this->redirectToRoute('sortie_show', ['id' => $sortie->getId()]);
     }
+
 
     #[Route('/sortie', name: 'list_sorties')]
     public function listSorties(EntityManagerInterface $entityManager): Response
@@ -178,5 +114,28 @@ class SortieController extends AbstractController
         return $this->render('accueil/home.html.twig', [
             'sorties' => $sorties,
         ]);
+    }
+
+    #[Route('/sortie/{id}/delete', name: 'sortie_delete')]
+    public function archive(Sortie $sortie)
+    {
+        $statusLabel = 'Archivée';
+
+        $qb = $this->entityManager->getRepository(Status::class)->createQueryBuilder('s');
+        $qb
+            ->select('s')
+            ->where($qb->expr()->eq('s.label', ':statusLabel'))
+            ->setParameter('statusLabel', $statusLabel)
+            ->getQuery();
+
+        $query = $qb->getQuery();
+        $result = $query->getOneOrNullResult();
+
+        if ($result !== $sortie->getStatus() || (!$this->security->isGranted('ROLE_ADMIN') && $sortie->getOrganizer() !== $this->security->getUser())) {
+            throw new AccessDeniedException('Accès refusé');
+        }
+
+        $sortie->setStatus($this->entityManager->getRepository(Status::class)->find(7));
+        $this->entityManager->flush();
     }
 }
