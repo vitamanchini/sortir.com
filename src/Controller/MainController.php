@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Controller;
 use App\Entity\Participant;
+use App\Entity\Place;
 use App\Entity\SearchData;
+use App\Form\PlaceFormType;
 use App\Form\SearchFormType;
 use App\Repository\SortieRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -44,49 +46,51 @@ class MainController extends AbstractController
             'filters' => $filters->createView()
         ]);
     }
-//    #[Route("/filter", name:"main_filter")]
-//    public function filter(#[CurrentUser] participant $user,
-//                           SortieRepository $sortieRepository,
-//                           Request $request,
-//                           EntityManagerInterface $entityManager): Response
-//    {
-//        $searchData = new SearchData();
+    #[Route("/new/place", name: "new_place")]
+    public function createPlace(Request $request,
+    EntityManagerInterface $entityManager){
+        $place = new Place();
+        $formTwoEntities = $this->createForm(PlaceFormType::class, $place);
+        $formTwoEntities->handleRequest($request);
+
+        if($formTwoEntities->isSubmitted() && $formTwoEntities->isValid()){
+            $entityManager->persist($place);
+            $entityManager->flush();
+            return $this->redirectToRoute('main_home');
+        }
+        return $this->render('place/create-place.html.twig', [
+            'participant' => $place,
+            'form' => $formTwoEntities->createView(),
+        ]);
+
+
+    }
+
+
 //
-//        $filters = $this->createForm(SearchFormType::class, $searchData);
+//    #[Route("/new/place", name: "new_place")]
+//    public function createPlace(Request $request,
+//                                EntityManagerInterface $entityManager,
+//                                ManagerRegistry $doctrine){
+//        $place = new Place();
+//        $city = new City();
+//        $formPlace = $this->createForm(PlaceFormType::class, $place);
+//        $formCity = $this->createForm(CityFormType::class, $city);
+//        $formCity->handleRequest($request);
 //
-//        $filters->handleRequest($request);
-//        $sorties = $sortieRepository->findSearch($searchData);
-//        if($filters->isSubmitted()){
-//            $entityManager->persist($searchData);
+//        $formPlace->handleRequest($request);
+//
+//
+//        if($formCity->isSubmitted() && $formCity->isValid()){
+//            $entityManager->persist($formCity);
 //            $entityManager->flush();
+//            return $this->redirectToRoute('main_home');
 //        }
-//        return $this->render('accueil/home.html.twig', [
-//            'user' => $user,
-//            'sorties' => $sorties,
-//            'filters' => $filters->createView()
+//        return $this->render('place/create-place.html.twig', [
+//            'participant' => $place,
+//            'form' => $formTwoEntities->createView(),
 //        ]);
+//
+//
 //    }
-    #[Route("/demo", name: "demo")]
-    public function demo(EntityManagerInterface $entityManager): Response
-    {
-        $user = new Participant();
-        $user->setEmail("demo@mail.com")
-            ->setRoles(["ROLE_ADMIN"])
-            ->setPassword("404040")
-            ->setActive(true)
-            ->setName("Jean-Luc")
-            ->setSecondName("Picard")
-            ->setPseudo("Picard")
-            ->setTelephone("+13 666 666");
-
-        dump($user);
-        $entityManager->persist($user);
-        $entityManager->flush();
-        return $this->render('accueil/home.html.twig');
-    }
-
-    public function checkMeInscribed($idSortie, $idParticipant, SortieRepository $sortieRepository)
-    {
-
-    }
 }

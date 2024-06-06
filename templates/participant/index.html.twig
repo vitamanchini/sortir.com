@@ -4,14 +4,14 @@
     <link rel="stylesheet" href="{{ asset('css/user-profile.css') }}">
 {% endblock %}
 
-{% block title %}Mon profil{% endblock %}
+{% block title %}Profil de {{ user.pseudo }}{% endblock %}
 
 {% block main %}
 
     <article>
-        <h2>{{ user.pseudo }}</h2>
+        <h2 id="user-profile-title">{{ user.pseudo }}</h2>
         <div id="profile-info">
-            <img id="profileImage" src="{{ asset('assets/' ~ user.profileImage) }}" alt="">
+            <img id="profileImage" src="{{ asset('assets/avatars/' ~ user.profileImage) }}" alt="">
             <table class="text20">
                 <tr>
                     <td>Prenom:</td>
@@ -31,7 +31,11 @@
                 </tr>
                 <tr>
                     <td>Ville de rattachement:</td>
-                    <td>{{ user.site.name }}</td>
+                    {% if user.site is null %}
+                    <td>-</td>
+                        {% else %}
+                        <td> {{ user.site.name }} </td>
+                    {% endif %}
                 </tr>
             </table>
         </div>

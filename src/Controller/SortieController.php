@@ -5,8 +5,11 @@ namespace App\Controller;
 use App\Entity\Participant;
 use App\Entity\Sortie;
 use App\Entity\Status;
+use App\EventListener\SortieCancelListener;
+use App\Form\ParticipantType;
 use App\Form\SortieType;
 use App\Repository\ParticipantRepository;
+use App\Repository\PlaceRepository;
 use App\Repository\SortieRepository;
 use App\Service\SortieAnnulationService;
 use App\Service\SortieDesisterService;
@@ -22,6 +25,7 @@ use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\File\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
@@ -87,6 +91,30 @@ class SortieController extends AbstractController
         $sortieRepository = $entityManager->getRepository(Sortie::class);
         $sortie = $sortieRepository->find($id);
         return $this->redirectToRoute('sortie_show', ['id' => $sortie->getId()]);
+    }
+    #[Route('sortie/new', name: 'sortie_create')]
+    public function new(#[CurrentUser] participant $user,
+                        Request                    $request,
+                        EntityManagerInterface     $entityManager,
+                        PlaceRepository            $placeRepository
+    ): Response
+    {
+        $sortie = new Sortie();
+        $form = $this->createForm(SortieType::class, $sortie);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $sortie->setOrganizer($entityManager->getRepository(Participant::class)->find($user));
+            $entityManager->persist($sortie);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('main_home');
+        }
+
+        return $this->render('sortie/create.html.twig', [
+            'sortie' => $sortie,
+            'form' => $form->createView(),
+        ]);
     }
 
     #[Route('/sortie/{id}/cancel', name:'sortie_cancel')]

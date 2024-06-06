@@ -8,7 +8,7 @@
         display: flex;
         flex-direction: row;
         margin-bottom: 50px;
-        margin-left: 0px;
+        margin-left: 0;
     }
     #filterslogo {
         display: none;

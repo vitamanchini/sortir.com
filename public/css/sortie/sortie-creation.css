@@ -1,0 +1,38 @@
+
+/*@media screen and (min-width: 1350px) {*/
+
+    section {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-around;
+        margin-top: 0 !important;
+
+        border: darkgreen solid 1px;
+        border-radius: 20px;
+        padding: 20px;
+width: 100%;
+    }
+
+    label{
+        width: 200px;
+    }
+    div {
+        margin-bottom: 20px;
+    }
+#new-place{
+
+}
+    #buttons{
+        display: flex;
+        justify-content: center;
+        button{
+            margin: 20px;
+            }
+    }
+/*}*/
+
+
+/*@media screen and (max-width: 500px) {*/
+
+/*}*/

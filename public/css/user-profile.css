@@ -2,8 +2,10 @@
 @media screen and (min-width: 1350px) {
     #profileImage{
         width: 400px;
+        aspect-ratio: 1/1;
         border-radius: 50%;
         border: #04AA6D solid 4px;
+        object-fit: cover;
     }
     #profile-info {
         display: flex;
@@ -14,6 +16,8 @@
 
     table {
         margin-left: 50px;
+        height: 0;
+        font-size: 18px;
     }
 
     td {
@@ -21,7 +25,12 @@
         width: auto;
 
     }
-
+    #user-profile-title{
+width: 100%;
+        text-align: center;
+        font-weight: 650;
+        margin-bottom: 40px;
+    }
 }
 
 @media screen and (max-width: 500px) {
@@ -29,6 +38,8 @@
         width: 70vw;
         border-radius: 50%;
         border: #04AA6D solid 4px;
+        object-fit: cover;
+        aspect-ratio: 1/1;
     }
     #profile-info {
         display: flex;
@@ -39,6 +50,7 @@
 
     table {
         margin-left: 10px;
+        height: 0;
 
     }
 

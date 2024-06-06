@@ -27,12 +27,16 @@ class Place
     #[ORM\Column(type:"decimal", length:9, scale:6)]
     private ?float $longitude = null;
 
-    #[ORM\ManyToOne(inversedBy: 'places')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?City $city = null;
+
 
     #[ORM\OneToMany(targetEntity: Sortie::class, mappedBy: 'place')]
     private Collection $sortie;
+
+    #[ORM\Column(length: 30)]
+    private ?string $cityName = null;
+
+    #[ORM\Column(length: 5)]
+    private ?string $postalCode = null;
 
     public function __construct()
     {
@@ -107,17 +111,6 @@ class Place
         return $this;
     }
 
-    public function getCity(): ?City
-    {
-        return $this->city;
-    }
-
-    public function setCity(?City $city): static
-    {
-        $this->city = $city;
-
-        return $this;
-    }
 
     /**
      * @return Collection<int, Sortie>
@@ -150,6 +143,30 @@ class Place
                 $sortie->setPlace(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCityName(): ?string
+    {
+        return $this->cityName;
+    }
+
+    public function setCityName(string $cityName): static
+    {
+        $this->cityName = $cityName;
+
+        return $this;
+    }
+
+    public function getPostalCode(): ?string
+    {
+        return $this->postalCode;
+    }
+
+    public function setPostalCode(string $postalCode): static
+    {
+        $this->postalCode = $postalCode;
 
         return $this;
     }

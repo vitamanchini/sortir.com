@@ -32,16 +32,16 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[ORM\Column(length: 50)]
-    private ?string $name = 'blabla';
+    private ?string $name = null;
 
     #[ORM\Column(length: 50)]
-    private ?string $secondName = 'blabla';
+    private ?string $secondName = null;
 
     #[ORM\Column(length: 15, nullable: true)]
     private ?string $telephone = null;
 
     #[ORM\Column]
-    private ?bool $active = true;
+    private ?bool $active = null;
 
 
     #[ORM\Column(length: 30)]

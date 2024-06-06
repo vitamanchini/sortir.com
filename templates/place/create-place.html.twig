@@ -6,14 +6,15 @@
 
 {% block title %}Créer nouveau profil{% endblock %}
 {% block main %}
-    <h2 id="user-profile-title">Créer nouveau profil</h2>
+    <h2 id="user-profile-title">Créer nouveau lieu</h2>
 
 <section id="user-form">
-    <img id="profileImageNew" src="" alt="">
+{{ form_start(form) }}
+{{ form_widget(form) }}
+    <button id="new-place-button">Créer nouvequ lieu</button>
 
-    {{ include('inc/user-data-form.html.twig', [{'button_label': 'Créer nouveau profil'},{'button_label': ''}]) }}
-</section>
-    <a href="{{ path('admin_page') }}">back to list</a>
+{{ form_end(form) }}
+   </section>
 {% endblock %}
     {% block scripts %}
 {#        <script src="{{ asset('scripts/home-page.js') }}"></script>#}

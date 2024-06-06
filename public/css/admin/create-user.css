@@ -1,0 +1,47 @@
+#user-form {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 50px;
+    margin-left: 0;
+    font-size: 18px;
+    form > div {
+margin-bottom: 20px;
+    }
+    form > div > label {
+        width: 230px;
+        font-size: 18px;
+    }
+}
+#profileImage{
+    width: 400px;
+    height: 400px;
+    /*aspect-ratio: 1/1;*/
+    border-radius: 50%;
+    border: #04AA6D solid 4px;
+    margin-right: 50px;
+    object-fit: cover;
+}#profileImageNew{
+    width: 400px;
+    border-radius: 50%;
+
+    margin-right: 50px;
+}
+#user-profile-title{
+    width: 100%;
+    text-align: center;
+    font-weight: 650;
+    margin-bottom: 40px;
+}
+.form-check-input:checked {
+    background-color: #09db8d;
+    border-color: #09db8d;
+}
+.form-check .form-check-input {
+     float: none;
+    margin-left: 0;
+    padding-left:0;
+}
+.form-switch{
+    margin-left: 0;
+    padding-left:0;
+}

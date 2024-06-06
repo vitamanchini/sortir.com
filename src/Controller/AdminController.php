@@ -2,14 +2,19 @@
 
 namespace App\Controller;
 
+
 use App\Entity\Participant;
+use App\Form\CsvImportForm;
 use App\Form\ParticipantType;
 use App\Repository\ParticipantRepository;
+use App\Service\CsvParserService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 #[Route("/admin", name:"admin_")]
 class AdminController extends AbstractController
@@ -33,12 +38,12 @@ class AdminController extends AbstractController
             $entityManager->persist($participant);
             $entityManager->flush();
 
-            return $this->redirectToRoute('page');
+            return $this->redirectToRoute('admin_page');
         }
 
         return $this->render('admin/create-user.html.twig', [
             'participant' => $participant,
-            'form' => $form,
+            'form' => $form->createView(),
         ]);
     }
 
@@ -57,18 +62,58 @@ class AdminController extends AbstractController
 
         return $this->renderForm('admin/edit.html.twig', [
             'participant' => $participant,
-            'form' => $form,
+            'form' => $form, //todo create form/view to edit
         ]);
     }
 
-    #[Route('/{id}', name: 'app_admin_delete')]
-    public function delete(Request $request, Participant $participant, EntityManagerInterface $entityManager): Response
+//    #[Route('/{id}', name: 'app_admin_delete')]
+//    public function delete(Request $request, Participant $participant, EntityManagerInterface $entityManager): Response
+//    {
+//        if ($this->isCsrfTokenValid('delete'.$participant->getId(), $request->request->get('_token'))) {
+//            $entityManager->remove($participant);
+//            $entityManager->flush();
+//        }
+//
+//        return $this->redirectToRoute('app_admin_index');
+//    }
+    #[Route('/new_users', name: 'create-users-csv')]
+    public function newUsersCsv(Request $request,
+                                EntityManagerInterface $entityManager,
+                                SluggerInterface $slugger,
+                                CsvParserService  $parserService): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$participant->getId(), $request->request->get('_token'))) {
-            $entityManager->remove($participant);
-            $entityManager->flush();
+
+        $form = $this->createForm(CsvImportForm::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $file = $form->get('file')->getData();
+
+            if ($file) {
+                $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+                $safeFilename = $slugger->slug($originalFilename);
+                $newFilename = $safeFilename.'-'.uniqid().'.'.$file->guessExtension();
+
+                try {
+                    $file->move(
+                        $this->getParameter('uploads_directory'),
+                        $newFilename
+                    );
+
+                    $filepath = $this->getParameter('uploads_directory') . '/' . $newFilename;
+                    $parserService->parseCsv($filepath);
+
+                } catch (FileException $e) {
+                    $this->addFlash('fail', 'Something went wrong');
+                }
+                $this->addFlash('success', 'File uploaded successfully');
+            }
+
         }
 
-        return $this->redirectToRoute('app_admin_index');
+        return $this->render('admin/create-users-csv.html.twig', [
+
+            'form' => $form->createView(),
+        ]);
     }
 }

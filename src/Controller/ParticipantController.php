@@ -12,6 +12,7 @@ class ParticipantController extends AbstractController
     #[Route('/participant/{id}', name: 'app_participant')]
     public function find(int $id, ParticipantRepository $participantRepository): Response
     {
+
         $user = $participantRepository->find($id);
 
         if (!$user) {

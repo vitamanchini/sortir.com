@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Créer la sortie{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/sortie/sortie-creation.css') }}">
+{% endblock %}
+
+{% block main %}
+    <h1>Créer la sortie</h1>
+    <section>
+        <div>
+            {{ form_start(form) }}
+            {{ form_row(form.name) }}
+            {{ form_row(form.dateHourStart) }}
+            {{ form_row(form.duration) }}
+            {{ form_row(form.dateLimitInscription) }}
+            {{ form_row(form.maxInscriptions) }}
+            {{ form_row(form.info) }}
+        </div>
+        <div>
+
+            {{ form_row(form.site) }}
+            {{ form_row(form.place) }}
+            <div><a href="{ path('new_place')}}" id="new-place"  class="btn btn-success" >Ajouter nouveau lieu</a></div>
+            <div><p id="showCityName">Ville</p></div>
+            <div><p id="showCityCode">Code postal</p></div>
+
+
+            {#        <li><strong>Rue :</strong> {{ form.place.street }}</li>#}
+            {#        <li><strong>Code postal:</strong> {{ sortie.place.city.postalCode }}</li>#}
+            {#        {{ form_row(form.place.latitude) }}#}
+            {#        {{ form_row(form.place.longitude) }}#}
+
+        </div>
+
+    </section>
+    <div id="buttons">
+
+        <button type="submit" class="btn btn-success">Enregistrer</button>
+        {#            <button type="submit" class="btn btn-primary" value="{{ sortie.status = 2 }}">Publier la sortie</button>#}
+
+        <button type="reset" class="btn btn-danger">Annuler</button>
+        {#                    <a href="{{ path('sortie_delete', {'id': sortie.id}) }}">Supprimer la sortie</a>#}
+        {#                    <a href="{{ path('sortie_cancel', {'id': sortie.id}) }}">Annuler la sortie</a>#}
+        {#        <a href="{{ path('sortie_show', {'id': sortie.id}) }}">Annuler</a>#}
+        {{ form_end(form, {render_rest: false}) }}
+    </div>
+{% endblock %}

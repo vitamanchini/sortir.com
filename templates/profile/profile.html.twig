@@ -2,26 +2,23 @@
 
 {% block title %}Gérer mon profil{% endblock %}
 
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/admin/create-user.css') }}">
+{% endblock %}
+
 {% block main %}
-<h1>Gérer mon profil</h1>
+    <h2 id="user-profile-title">Gérer mon profil</h2>
 
-{{ form_start(form) }}
-    {{ form_row(form.secondName) }}
-    {{ form_row(form.name) }}
-    {{ form_row(form.pseudo) }}
-    {{ form_row(form.email) }}
-    {{ form_row(form.password) }}
-    {{ form_row(form.telephone) }}
-    {{ form_row(form.site) }}
-    {{ form_row(form.save) }}
-{{ form_end(form) }}
-
-{% if app.flashes('success') %}
-    <div class="alert alert-success">
-        {% for message in app.flashes('success') %}
-            {{ message }}
-        {% endfor %}
-    </div>
-{% endif %}
+    <section id="user-form">
+        <img id="profileImage" src="{{ asset('assets/avatars/' ~ user.profileImage) }}" alt="">
+        {% include "inc/user-data-form.html.twig" %}
+        {% if app.flashes('success') %}
+            <div class="alert alert-success">
+                {% for message in app.flashes('success') %}
+                    {{ message }}
+                {% endfor %}
+            </div>
+        {% endif %}
+    </section>
 
 {% endblock %}

@@ -2,7 +2,6 @@
 
 namespace App\Form;
 
-use App\Entity\City;
 use App\Entity\Participant;
 use App\Entity\Place;
 use App\Entity\Site;
@@ -79,15 +78,18 @@ class SortieType extends AbstractType
             ->add('dateLimitInscription', DateTimeType::class, ['widget' => 'single_text', 'label' => 'Date limite d\'inscription'])
             ->add('maxInscriptions', IntegerType::class, ['label' => 'Nombre maximum d\'inscriptions'])
             ->add('info', TextareaType::class, ['label' => 'Informations supplémentaires', 'required' => false])
-            ->add('place', PlaceType::class, [
+            ->add('place', EntityType::class, [
+                'class' => Place::class,
                 'label' => 'Lieu',
-                'mapped' => false,
-            ])
-            ->add('city', EntityType::class, [
-                'class' => City::class,
                 'choice_label' => 'name',
-                'label' => 'Ville',
+
+//                'mapped' => false,
             ])
+//            ->add('city', EntityType::class, [
+//                'class' => City::class,
+//                'choice_label' => 'name',
+//                'label' => 'Ville',
+//            ])
             ->add('site', EntityType::class, [
                 'class' => Site::class,
                 'choice_label' => 'name',
