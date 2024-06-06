@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier la sortie{% endblock %}
+
+{% block main %}
+    <h1>Modifier la sortie</h1>
+    <div>
+        {{ form_start(form, {'method': 'POST', 'action': path('sortie_edit', {'id': sortie.id}) }) }}
+            {{ form_row(form.name) }}
+            {{ form_row(form.dateHourStart) }}
+            {{ form_row(form.duration) }}
+            {{ form_row(form.dateLimitInscription) }}
+            {{ form_row(form.maxInscriptions) }}
+            {{ form_row(form.info) }}
+            {{ form_row(form.place.city) }}
+            {{ form_row(form.site) }}
+            <li><strong>Rue :</strong> {{ sortie.place.street }}</li>
+            <li><strong>Code postal:</strong> {{ sortie.place.city.postalCode }}</li>
+            {{ form_row(form.place.latitude) }}
+            {{ form_row(form.place.longitude) }}
+        {{ form_widget(form) }}
+        <button class="btn btn-primary">Enregistrer</button>
+        {{ form_end(form) }}
+        <a href="{{ path('sortie_publish', {'id': sortie.id}) }}">Publier la sortie</a>
+        <a href="{{ path('sortie_delete', {'id': sortie.id}) }}">Supprimer la sortie</a>
+        <a href="{{ path('sortie_cancel', {'id': sortie.id}) }}">Annuler la sortie</a>
+        <a href="{{ path('sortie_show', {'id': sortie.id}) }}">Annuler</a>
+    </div>
+{% endblock %}
+

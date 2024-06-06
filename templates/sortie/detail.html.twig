@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails de la sortie{% endblock %}
+
+{% block main %}
+    <h1>Détails de la sortie: {{ sortie.name }}</h1>
+    <ul>
+        <li><strong>Date de début:</strong> {{ sortie.dateHourStart|date('d-m-Y H:i') }}</li>
+        <li><strong>Durée:</strong> {{ sortie.duration }} minutes</li>
+        <li><strong>Date limite d'inscription:</strong> {{ sortie.dateLimitInscription|date('d-m-Y') }}</li>
+        <li><strong>Nombre maximum d'inscriptions:</strong> {{ sortie.maxInscriptions }}</li>
+        <li><strong>Informations supplémentaires:</strong> {{ sortie.info }}</li>
+        <li><strong>Site:</strong> {{ sortie.site.name }}</li>
+        <li><strong>Lieu:</strong> {{ sortie.place.name }}</li>
+        <li><strong>Rue:</strong> {{ sortie.place.street }}</li>
+        <li><strong>Code postal:</strong> {{ sortie.place.city.postalCode }}</li>
+        <li><strong>Latitude:</strong> {{ sortie.place.latitude }}</li>
+        <li><strong>Longitude:</strong> {{ sortie.place.longitude }}</li>
+        <li><strong>Organisateur:</strong> {{ sortie.organizer.name }}</li>
+        {% if sortie.status.id is same as 6 %}
+            <li><strong>Motif d'annulation :</strong> {{ sortie.motif }}</li>
+        {% endif %}
+    </ul>
+
+    <h2>Participants inscrits:</h2>
+    <ul>
+        {% for participant in sortie.participants %}
+            <li>{{ participant.name }}</li>
+        {% else %}
+            <li>Aucun participant inscrit.</li>
+        {% endfor %}
+    </ul>
+    {% if sortie.organizer is same as app.user or is_granted('ROLE_ADMIN') %}
+        <a href="{{ path('sortie_edit', {'id': sortie.id}) }}">Modifier la sortie</a>
+    {% endif %}
+    <a href="{{ path('main_home')}}">Retour</a>
+{% endblock %}
+
