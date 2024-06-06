@@ -4,6 +4,7 @@ namespace App\Controller;
 
 
 use App\Entity\Participant;
+use App\Entity\Sortie;
 use App\Form\CsvImportForm;
 use App\Form\ParticipantType;
 use App\Repository\ParticipantRepository;
@@ -49,8 +50,9 @@ class AdminController extends AbstractController
 
 
     #[Route('/{id}/edit', name: 'edit')]
-    public function edit(Request $request, Participant $participant, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, int $id, EntityManagerInterface $entityManager): Response
     {
+        $participant = $entityManager->getRepository(Participant::class)->find($id);
         $form = $this->createForm(ParticipantType::class, $participant);
         $form->handleRequest($request);
 
@@ -66,16 +68,17 @@ class AdminController extends AbstractController
         ]);
     }
 
-//    #[Route('/{id}', name: 'app_admin_delete')]
-//    public function delete(Request $request, Participant $participant, EntityManagerInterface $entityManager): Response
-//    {
-//        if ($this->isCsrfTokenValid('delete'.$participant->getId(), $request->request->get('_token'))) {
-//            $entityManager->remove($participant);
-//            $entityManager->flush();
-//        }
-//
-//        return $this->redirectToRoute('app_admin_index');
-//    }
+    #[Route('/{id}', name: 'delete')]
+    public function delete(Request $request, int $id, EntityManagerInterface $entityManager): Response
+    {
+        $participant = $entityManager->getRepository(Participant::class)->find($id);
+        if ($this->isCsrfTokenValid('delete'.$participant->getId(), $request->request->get('_token'))) {
+            $entityManager->remove($participant);
+            $entityManager->flush();
+        }
+
+        return $this->redirectToRoute('admin_page');
+    }
     #[Route('/new_users', name: 'create-users-csv')]
     public function newUsersCsv(Request $request,
                                 EntityManagerInterface $entityManager,

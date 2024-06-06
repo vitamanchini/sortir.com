@@ -71,9 +71,9 @@ class Sortie
     #[ORM\ManyToMany(targetEntity: Participant::class, mappedBy: 'sorties')]
     private Collection $participants;
 
-    #[ORM\ManyToOne(targetEntity: City::class, inversedBy: 'sorties')]
-    #[ORM\JoinColumn(name:"city_id", referencedColumnName:"id",nullable: true)]
-    private City $city;
+//    #[ORM\ManyToOne(targetEntity: City::class, inversedBy: 'sorties')]
+//    #[ORM\JoinColumn(name:"city_id", referencedColumnName:"id",nullable: true)]
+//    private City $city;
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private DateTime $updatedAt;
 

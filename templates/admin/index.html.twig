@@ -12,9 +12,7 @@
     <ul id="admin-functions">
         <li><a href="{{ path ('admin_create-user') }}">Inscrire un utilisateur manuellement</a></li>
         <li><a href="{{ path ('admin_create-users-csv') }}">Inscrire des utilisateurs par intégration d'un fichier</a></li>
-        <li>Désactiver des utilisateurs</li>
-        <li>Supprimer des utilisateurs</li>
-        <li>Annuler une sortie en tant qu'administrateur</li>
+
     </ul>
 </div>
 
@@ -44,11 +42,12 @@
                 <td>{{ participant.name }}</td>
                 <td>{{ participant.secondName }}</td>
                 <td>{{ participant.telephone }}</td>
+                <td>{{ participant.active ? 'Yes' : 'No' }}</td>
                 <td>{{ participant.pseudo }}</td>
-                <td>{{ participant.profileImage }}</td>
                 <td>
-                    <a href="{{ path('app_participant', {'id': participant.id}) }}">show</a> -
-                    <a href="{{ path('admin_edit', {'id': participant.id}) }}">edit</a>
+                    <a href="{{ path('app_participant', {'id': participant.id}) }}">Regarder</a> -
+                    <a href="{{ path('admin_edit', {'id': participant.id}) }}">Modifier</a> -
+                    {{ include('admin/_delete_form.html.twig') }}
                 </td>
             </tr>
         {% else %}
