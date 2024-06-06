@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Entity\City;
 use App\Entity\Sortie;
 use App\Exception\CreateNotFoundException;
 use App\Form\SortieType;
@@ -44,10 +45,14 @@ class SortieModifierService
 
         $form = $this->formFactory->create(SortieType::class, $sortie);
         $form->handleRequest($request);
-
+        $city = $form->get('city')->getData();
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->entityManager->flush();
-            return new RedirectResponse($this->router->generate('sortie_show', ['id' => $sortie->getId()]));
+            $city = $form->get('city')->getData();
+            if($city instanceof City) {
+                $sortie->setCity($city);
+                $this->entityManager->flush();
+                return new RedirectResponse($this->router->generate('sortie_show', ['id' => $sortie->getId()]));
+            }
         } else{
             $request->getSession()->getFlashBag()->add("error", "La sortie n'a pas été mis à jour");
         }

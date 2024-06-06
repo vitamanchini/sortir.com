@@ -61,6 +61,7 @@
             <th>Actions</th>
         </tr>
         {% for sortie in sorties %}
+            {% if sortie.status.label is not same as 'Archivée' %}
                 <tr>
                     <td>{{ sortie.name }}</td>
                     <td>{{ sortie.dateHourStart | date('H-i / d-m-Y') }}</td>
@@ -92,7 +93,7 @@
                         {% if sortie.status.id is not same as 4 and sortie.status.id is not same as 5 and sortie.organizer is same as app.user or is_granted('ROLE_ADMIN') %}
                             <a href="{{ path('sortie_cancel', {'id': sortie.id}) }}">Annuler</a>
                         {% endif %}
-
+            {% endif %}
                     </td>
                 </tr>
         {% endfor %}

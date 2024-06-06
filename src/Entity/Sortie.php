@@ -71,7 +71,7 @@ class Sortie
     #[ORM\ManyToMany(targetEntity: Participant::class, mappedBy: 'sorties')]
     private Collection $participants;
 
-    #[ORM\ManyToOne(targetEntity: Sortie::class, inversedBy: 'sorties')]
+    #[ORM\ManyToOne(targetEntity: City::class, inversedBy: 'sorties')]
     #[ORM\JoinColumn(name:"city_id", referencedColumnName:"id",nullable: true)]
     private City $city;
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
@@ -307,7 +307,7 @@ class Sortie
     public function isUserInscrit(UserInterface $user): bool
     {
         foreach ($this->participants as $participant) {
-            if ($participant->getUser() === $user) {
+            if ($participant->getUserIdentifier() === $user) {
                 return true;
             }
         }

@@ -58,7 +58,7 @@ class SortieListener
             $this->checkOngoing($sortie);
             $this->checkFinished($sortie);
             $this->checkArchivage($sortie);
-            $sortie->setCanShowDetailClosure($this->createCanShowDetailClosure($sortie));
+//            $sortie->setCanShowDetailClosure($this->createCanShowDetailClosure($sortie));
         }
 
     }

@@ -4,10 +4,12 @@ namespace App\Service;
 
 use App\Entity\Sortie;
 use App\Entity\Status;
+use DateTime;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
 use Symfony\Component\HttpFoundation\File\Exception\AccessDeniedException;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Security;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -24,8 +26,13 @@ class SortieDesisterService
     }
 
 
-    public function desister(Sortie $sortie)
+    public function desister(Request $request, int $id):void
     {
+        $sortie = $this->entityManager->getRepository(Sortie::class)->find($id);
+
+        if (!$sortie) {
+            throw $this->createNotFoundException('Sortie non trouvée');
+        }
         $user = $this->security->getUser();
         $statusLabels = ['Ouverte', 'Clôturée'];
 
@@ -43,7 +50,7 @@ class SortieDesisterService
         if (!$sortie->isUserInscrit($user) || $sortie->getOrganizer() === $user || $result !== $sortie->getStatus()) {
             throw new AccessDeniedException("Accès refusé");
         }
-
+        $sortie->setUpdatedAt(new DateTime());
         $sortie->removeParticipant($user);
         $this->entityManager->flush();
     }
