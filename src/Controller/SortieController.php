@@ -92,36 +92,11 @@ class SortieController extends AbstractController
         $sortie = $sortieRepository->find($id);
         return $this->redirectToRoute('sortie_show', ['id' => $sortie->getId()]);
     }
-    #[Route('sortie/new', name: 'sortie_create')]
-    public function new(#[CurrentUser] participant $user,
-                        Request                    $request,
-                        EntityManagerInterface     $entityManager,
-                        PlaceRepository            $placeRepository
-    ): Response
-    {
-        $sortie = new Sortie();
-        $form = $this->createForm(SortieType::class, $sortie);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $sortie->setOrganizer($entityManager->getRepository(Participant::class)->find($user));
-            $entityManager->persist($sortie);
-            $entityManager->flush();
-
-            return $this->redirectToRoute('main_home');
-        }
-
-        return $this->render('sortie/create.html.twig', [
-            'sortie' => $sortie,
-            'form' => $form->createView(),
-        ]);
-    }
 
     #[Route('/sortie/{id}/cancel', name:'sortie_cancel')]
     public function annuler(Sortie $sortie,int $id, Request $request, SortieAnnulationService $sortieAnnulationService): Response
     {
         $sortieAnnulationService->annuler($id, $request);
-
         return $this->redirectToRoute('sortie_show', ['id' => $sortie->getId()]);
     }
 
@@ -194,7 +169,31 @@ class SortieController extends AbstractController
         $sortie->setStatus($this->entityManager->getRepository(Status::class)->find(7));
         $this->entityManager->flush();
         $entityManager->flush();
-
         return $this->redirectToRoute('main_home');
+    }
+
+     #[Route('sortie/new', name: 'sortie_create')]
+    public function new(#[CurrentUser] participant $user,
+                        Request                    $request,
+                        EntityManagerInterface     $entityManager,
+                        PlaceRepository            $placeRepository
+    ): Response
+    {
+        $sortie = new Sortie();
+        $form = $this->createForm(SortieType::class, $sortie);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $sortie->setOrganizer($entityManager->getRepository(Participant::class)->find($user));
+            $entityManager->persist($sortie);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('main_home');
+        }
+
+        return $this->render('sortie/create.html.twig', [
+            'sortie' => $sortie,
+            'form' => $form->createView(),
+        ]);
     }
 }
