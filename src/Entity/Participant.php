@@ -32,16 +32,16 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[ORM\Column(length: 50)]
-    private ?string $name = "null";
+    private ?string $name = null;
 
     #[ORM\Column(length: 50)]
-    private ?string $secondName = "null";
+    private ?string $secondName = null;
 
     #[ORM\Column(length: 15, nullable: true)]
     private ?string $telephone = null;
 
     #[ORM\Column]
-    private ?bool $active = true;
+    private ?bool $active = null;
 
 
     #[ORM\Column(length: 30)]
@@ -61,13 +61,18 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function __construct()
     {
-
         $this->organisedSorties = new ArrayCollection();
         $this->sorties = new ArrayCollection();
     }
 
+    public function __toString()
+    {
+        $siteString = $this->getSite() ? sprintf(' - %s', $this->getSite()) : '';
+        $organisedSortiesString = $this->getOrganisedSorties()->count() ? sprintf(' - %d sorties organisées', $this->getOrganisedSorties()->count()) : '';
+        $sortiesString = $this->getSorties()->count() ? sprintf(' - %d sorties inscrites', $this->getSorties()->count()) : '';
 
-
+        return sprintf('%s %s (%s) - %s%s%s', $this->getName(), $this->getSecondName(), $this->getEmail(), $siteString, $organisedSortiesString, $sortiesString);
+    }
 
     public function getId(): ?int
     {

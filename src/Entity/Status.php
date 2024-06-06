@@ -19,11 +19,18 @@ class Status
     private ?string $label = null;
 
     #[ORM\OneToMany(targetEntity: Sortie::class, mappedBy: 'status')]
-    private Collection $sorties;
+    private Collection $sortie;
 
     public function __construct()
     {
-        $this->sorties = new ArrayCollection();
+        $this->sortie = new ArrayCollection();
+    }
+
+    public function __toString()
+    {
+        $sortieString = $this->getSortie() ? sprintf(' - %s', $this->getSortie()) : '';
+
+        return sprintf('%s%s', $this->getLabel(), $sortieString);
     }
 
     public function getId(): ?int
@@ -46,27 +53,27 @@ class Status
     /**
      * @return Collection<int, Sortie>
      */
-    public function getSorties(): Collection
+    public function getSortie(): Collection
     {
-        return $this->sorties;
+        return $this->sortie;
     }
 
-    public function addSorty(Sortie $sorty): static
+    public function addSortie(Sortie $sortie): static
     {
-        if (!$this->sorties->contains($sorty)) {
-            $this->sorties->add($sorty);
-            $sorty->setStatus($this);
+        if (!$this->sortie->contains($sortie)) {
+            $this->sortie->add($sortie);
+            $sortie->setStatus($this);
         }
 
         return $this;
     }
 
-    public function removeSorty(Sortie $sorty): static
+    public function removeSortie(Sortie $sortie): static
     {
-        if ($this->sorties->removeElement($sorty)) {
+        if ($this->sortie->removeElement($sortie)) {
             // set the owning side to null (unless already changed)
-            if ($sorty->getStatus() === $this) {
-                $sorty->setStatus(null);
+            if ($sortie->getStatus() === $this) {
+                $sortie->setStatus(null);
             }
         }
 

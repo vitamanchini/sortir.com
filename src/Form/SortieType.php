@@ -111,10 +111,10 @@ class SortieType extends AbstractType
 //                'choice_label' => 'email',
 //                'label' => 'Organisateur'
 //            ])
-//            if ($builder->getData()->getStatus()->getId() == 6)
-//            {
-//                $builder->add('motif', TextareaType::class, ['label' => 'Motif']);
-//            }
+            if ($builder->getData()->getStatus()->getId() == 6)
+            {
+                $builder->add('motif', TextareaType::class, ['label' => 'Motif']);
+            }
 
         }
 

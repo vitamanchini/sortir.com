@@ -45,4 +45,20 @@ class StatusRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+    public function getLabel(int $id): ?string
+    {
+        $status = $this->find($id);
+
+        return $status?->getLabel();
+    }
+
+    /**
+     * Retourne le label d'un Status par un critère spécifique
+     */
+    public function getLabelBy(array $criteria): ?string
+    {
+        $status = $this->findOneBy($criteria);
+
+        return $status?->getLabel();
+    }
 }

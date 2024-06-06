@@ -21,10 +21,10 @@ class Place
     #[ORM\Column(length: 50, nullable: true)]
     private ?string $street = null;
 
-    #[ORM\Column]
+    #[ORM\Column(type:"decimal", length:9, scale:6)]
     private ?float $latitude = null;
 
-    #[ORM\Column]
+    #[ORM\Column(type:"decimal", length:9, scale:6)]
     private ?float $longitude = null;
 
 
@@ -43,6 +43,21 @@ class Place
         $this->sortie = new ArrayCollection();
     }
 
+    public function __toString()
+    {
+        $sortie = $this->getSortie()->first();
+        $sortieString = $sortie ? sprintf(' - %s', $sortie->getName()) : '';
+
+        return sprintf(
+            '%s - %s, %s (%s, %s)%s',
+            $this->getName(),
+            $this->getStreet(),
+            $this->getCity(),
+            $this->getLatitude(),
+            $this->getLongitude(),
+            $sortieString
+        );
+    }
     public function getId(): ?int
     {
         return $this->id;
@@ -72,24 +87,24 @@ class Place
         return $this;
     }
 
-    public function getLatitude(): ?float
+    public function getLatitude(): ?string
     {
         return $this->latitude;
     }
 
-    public function setLatitude(float $latitude): static
+    public function setLatitude(string $latitude): static
     {
         $this->latitude = $latitude;
 
         return $this;
     }
 
-    public function getLongitude(): ?float
+    public function getLongitude(): ?string
     {
         return $this->longitude;
     }
 
-    public function setLongitude(float $longitude): static
+    public function setLongitude(string $longitude): static
     {
         $this->longitude = $longitude;
 
@@ -103,6 +118,11 @@ class Place
     public function getSortie(): Collection
     {
         return $this->sortie;
+    }
+
+    public function setSortie(Collection $sortie): void
+    {
+        $this->sortie = $sortie;
     }
 
     public function addSortie(Sortie $sortie): static

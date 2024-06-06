@@ -21,6 +21,60 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Kernel.php'
+    App\Entity\Sortie:
+        public: true
+
+    App\Controller\SortieController:
+        arguments:
+            $sortie: '@App\Entity\Sortie'
+            $participantRepository: '@App\Repository\ParticipantRepository'
+            $sortieRepository: '@App\Repository\SortieRepository'
+            $formFactory: '@form.factory'
+            $twig: '@twig'
+
+    App\EventListener\SortieListener:
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+            $statusRepository: '@App\Repository\StatusRepository'
+        tags:
+            - { name: doctrine.event_listener, event: postLoad, method: postLoad }
+            - { name: doctrine.event_listener, event: preUpdate, method: preUpdate }
+
+    App\Service\SortieDesisterService:
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+            $security: '@security.helper'
+
+
+    App\Service\SortieAnnulationService:
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+            $security: '@security.helper'
+
+    App\Service\SortieInscriptionService:
+        arguments:
+                $entityManager: '@doctrine.orm.entity_manager'
+                $security: '@security.helper'
+
+
+    App\Service\SortiePublierService:
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+            $security: '@security.helper'
+
+    App\Service\SortieModifierService:
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+            $formFactory: '@form.factory'
+            $router: '@router'
+            $twig: '@twig'
+
+    App\Repository\SortieRepository:
+        arguments:
+            $registry: '@Doctrine\Common\Persistence\ManagerRegistry'
+        tags:
+            - { name: 'doctrine.repository_service', alias: 'App\Repository\SortieRepository' }
+
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

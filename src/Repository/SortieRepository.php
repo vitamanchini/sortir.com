@@ -23,6 +23,19 @@ class SortieRepository extends ServiceEntityRepository
         parent::__construct($registry, Sortie::class);
     }
 
+    public function findVisibleSorties(\DateTime $oneMonthAgo): array
+    {
+        $dateLimit = $oneMonthAgo;
+        $qb = $this->createQueryBuilder('s');
+
+        // Filtrer les sorties d'il y a 1 mois
+        $qb->andWhere($qb->expr()->gte('s.dateHeureDebut', ':dateLimit'))
+            ->setParameter('dateLimit', $oneMonthAgo);
+
+
+        return $qb->getQuery()->getResult();
+    }
+
 //    /**
 //     * @return Sortie[] Returns an array of Sortie objects
 //     */
