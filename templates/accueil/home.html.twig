@@ -63,12 +63,16 @@
         {% for sortie in sorties %}
                 <tr>
                     <td>{{ sortie.name }}</td>
-                    <td>{{ sortie.dateHourStart|date('d-m-Y H:i') }}</td>
-                    <td>{{ sortie.dateLimitInscription|date('d-m-Y H:i') }}</td>
-{#                    <td>{{ sortie.dateHourStart + sortie.duration*60*60}}</td>#}
-                    <td>{{ sortie.status.label }}</td>
-                    <td>{{ sortie.dateHourStart|date('d-m-Y H:i') }}</td>
-                    <td>{{ sortie.site.name }}</td>
+                    <td>{{ sortie.dateHourStart | date('H-i / d-m-Y') }}</td>
+                    <td id="invis">{{ sortie.dateLimitInscription | date('d-m-Y') }}</td>
+                    <td id="invis">{{ sortie.participants | length }} / {{ sortie.maxInscriptions }}</td>
+                    <td id="invis">{{ sortie.status.label }}</td>
+                    {% if sortie.participants.user.id is defined %}
+                        <td id="invis">Inscribed</td>
+                    {% else %}
+                        <td id="invis">Not inscribed</td>
+                    {% endif %}
+                    <td id="invis">{{ sortie.organizer.name }} {{ sortie.organizer.secondName }} </td>
                     <td>
                         {% if is_granted('IS_AUTHENTICATED_FULLY') %}
                             <a href="{{ path('sortie_show', {'id': sortie.id}) }}">Détails</a>
@@ -91,22 +95,6 @@
 
                     </td>
                 </tr>
-            <tr>
-                <td>{{ sortie.name }}</td>
-                <td>{{ sortie.dateHourStart | date('H-i / d-m-Y') }}</td>
-                <td id="invis">{{ sortie.dateLimitInscription | date('d-m-Y') }}</td>
-                <td id="invis">{{ sortie.participants | length }} / {{ sortie.maxInscriptions }}</td>
-                <td id="invis">{{ sortie.status.label }}</td>
-
-                {% if sortie.participants.user.id is defined %}
-                    <td id="invis">Inscribed</td>
-                {% else %}
-                    <td id="invis">Not inscribed</td>
-                {% endif %}
-                <td id="invis">{{ sortie.organizer.name }} {{ sortie.organizer.secondName }} </td>
-
-                <td>Actions</td>
-            </tr>
         {% endfor %}
     </table>
     <a href="{{ path('main_home') }}">

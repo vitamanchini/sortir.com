@@ -18,11 +18,11 @@ use Twig\Error\SyntaxError;
 
 class SortieModifierService
 {
-    private $entityManager;
-    private $formFactory;
-    private $router;
+    private EntityManagerInterface $entityManager;
+    private FormFactoryInterface $formFactory;
+    private RouterInterface $router;
 
-    private $twig;
+    private Environment $twig;
 
     public function __construct(EntityManagerInterface $entityManager, FormFactoryInterface $formFactory, RouterInterface $router, Environment $twig)
     {
@@ -33,6 +33,11 @@ class SortieModifierService
     }
 
 
+    /**
+     * @throws SyntaxError
+     * @throws RuntimeError
+     * @throws LoaderError
+     */
     public function edit(int $id, Request $request): Response
     {
         $sortie = $this->entityManager->getRepository(Sortie::class)->find($id);
@@ -54,7 +59,11 @@ class SortieModifierService
     }
 
 
-
+    /**
+     * @throws RuntimeError
+     * @throws SyntaxError
+     * @throws LoaderError
+     */
     private function render(array $parameters = []): Response
     {
         $content = $this->twig->render('sortie/edit.html.twig', $parameters);

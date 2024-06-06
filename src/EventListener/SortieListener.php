@@ -57,7 +57,7 @@ class SortieListener
             $this->checkCloture($sortie);
             $this->checkOngoing($sortie);
             $this->checkFinished($sortie);
-//            $this->checkArchivage($sortie);
+            $this->checkArchivage($sortie);
             $sortie->setCanShowDetailClosure($this->createCanShowDetailClosure($sortie));
         }
 
@@ -151,18 +151,18 @@ class SortieListener
             return true;
         };
     }
-//    public function checkArchivage(Sortie $sortie): void
-//    {
-//        $currentDate = new DateTime();
-//
-//        // Soustraire un intervalle d'un mois à la date actuelle
-//        $oneMonthAgo = $currentDate->sub(new DateInterval('P1M'));
-//
-//        if ($sortie->getDateLimitInscription() <= $oneMonthAgo && $sortie->getStatus() != 7) {
-//            $status = $this->statusRepository->find(7);
-//            $sortie->setStatus($status);
-//            $this->entityManager->persist($sortie);
-//            $this->entityManager->flush();
-//        }
-//    }
+    public function checkArchivage(Sortie $sortie): void
+    {
+        $currentDate = new DateTime();
+
+        // Soustraire un intervalle d'un mois à la date actuelle
+        $oneMonthAgo = $currentDate->sub(new DateInterval('P1M'));
+
+        if ($sortie->getDateLimitInscription() <= $oneMonthAgo && $sortie->getStatus() != 7) {
+            $status = $this->statusRepository->find(7);
+            $sortie->setStatus($status);
+            $this->entityManager->persist($sortie);
+            $this->entityManager->flush();
+        }
+    }
 }

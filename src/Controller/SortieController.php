@@ -5,8 +5,8 @@ namespace App\Controller;
 use App\Entity\Participant;
 use App\Entity\Sortie;
 use App\Entity\Status;
-use App\EventListener\SortieCancelListener;
 use App\Form\SortieType;
+use App\Repository\ParticipantRepository;
 use App\Repository\SortieRepository;
 use App\Service\SortieAnnulationService;
 use App\Service\SortieDesisterService;
@@ -16,19 +16,35 @@ use App\Service\SortiePublierService;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\File\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
+use Twig\Environment;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
 
 class SortieController extends AbstractController
 {
-    private $sortieRepository;
+    private SortieRepository $sortieRepository;
+    private Sortie $sortie;
+    private ParticipantRepository $participantRepository;
+    private FormFactoryInterface $formFactory;
 
-    public function __construct(SortieRepository $sortieRepository)
+    private Environment $twig;
+    private EntityManagerInterface $entityManager;
+
+    public function __construct(SortieRepository $sortieRepository, Sortie $sortie, ParticipantRepository $participantRepository, FormFactoryInterface $formFactory, Environment $twig, EntityManagerInterface $entityManager)
     {
         $this->sortieRepository = $sortieRepository;
+        $this->sortie = $sortie;
+        $this->participantRepository = $participantRepository;
+        $this->formFactory = $formFactory;
+        $this->environment=$twig;
+        $this->entityManager = $entityManager;
     }
     #[Route('/sortie/{id}', name: 'sortie_show')]
     public function show(int $id, EntityManagerInterface $entityManager): Response
@@ -46,10 +62,14 @@ class SortieController extends AbstractController
         ]);
     }
 
+    /**
+     * @throws RuntimeError
+     * @throws SyntaxError
+     * @throws LoaderError
+     */
     #[Route('/sortie/{id}/edit', name: 'sortie_edit')]
-    public function edit(Sortie $sortie, SortieModifierService $sortieModifierService): Response
+    public function edit(int $id, Request $request, SortieModifierService $sortieModifierService): Response
     {
-        dd($sortie);
         return $sortieModifierService->edit($id, $request);
     }
 

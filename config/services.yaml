@@ -19,6 +19,17 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Kernel.php'
+    App\Entity\Sortie:
+        public: true
+
+    App\Controller\SortieController:
+        arguments:
+            $sortie: '@App\Entity\Sortie'
+            $participantRepository: '@App\Repository\ParticipantRepository'
+            $sortieRepository: '@App\Repository\SortieRepository'
+            $formFactory: '@form.factory'
+            $twig: '@twig'
+
     App\EventListener\SortieListener:
         arguments:
             $entityManager: '@doctrine.orm.entity_manager'
@@ -57,7 +68,7 @@ services:
 
     App\Repository\SortieRepository:
         arguments:
-            $registry: '@doctrine.orm.entity_manager'
+            $registry: '@Doctrine\Common\Persistence\ManagerRegistry'
         tags:
             - { name: 'doctrine.repository_service', alias: 'App\Repository\SortieRepository' }
 
