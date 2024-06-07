@@ -12,12 +12,12 @@
             {{ form_row(form.dateLimitInscription) }}
             {{ form_row(form.maxInscriptions) }}
             {{ form_row(form.info) }}
-            {{ form_row(form.place.cityName) }}
+            {{ form_row(form.place) }}
             {{ form_row(form.site) }}
             <li><strong>Rue :</strong> {{ sortie.place.street }}</li>
             <li><strong>Code postal:</strong> {{ sortie.place.postalCode }}</li>
-            {{ form_row(form.place.latitude) }}
-            {{ form_row(form.place.longitude) }}
+{#            {{ form_row(form.place.latitude) }}#}
+{#            {{ form_row(form.place.longitude) }}#}
         {{ form_widget(form) }}
         <button class="btn btn-primary">Enregistrer</button>
         {{ form_end(form) }}

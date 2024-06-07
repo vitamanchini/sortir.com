@@ -52,7 +52,7 @@ class Place
             '%s - %s, %s (%s, %s)%s',
             $this->getName(),
             $this->getStreet(),
-            $this->getCity(),
+            $this->getCityName(),
             $this->getLatitude(),
             $this->getLongitude(),
             $sortieString

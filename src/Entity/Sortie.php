@@ -87,12 +87,12 @@ class Sortie
         $this->updatedAt = new DateTime;
     }
 
-    public function getCity(): City
+    public function getCity(): Place
     {
         return $this->city;
     }
 
-    public function setCity(City $city): void
+    public function setCity(Place $city): void
     {
         $this->city = $city;
     }

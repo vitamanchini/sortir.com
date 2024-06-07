@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Entity\City;
+use App\Entity\Place;
 use App\Entity\Sortie;
 use App\Exception\CreateNotFoundException;
 use App\Form\SortieType;
@@ -45,10 +46,9 @@ class SortieModifierService
 
         $form = $this->formFactory->create(SortieType::class, $sortie);
         $form->handleRequest($request);
-        $city = $form->get('city')->getData();
         if ($form->isSubmitted() && $form->isValid()) {
-            $city = $form->get('city')->getData();
-            if($city instanceof City) {
+            $city = $form->get('cityName')->getData();
+            if($city instanceof Place) {
                 $sortie->setCity($city);
                 $this->entityManager->flush();
                 return new RedirectResponse($this->router->generate('sortie_show', ['id' => $sortie->getId()]));
